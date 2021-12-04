@@ -1,0 +1,1 @@
+b.net/myFirstDatabase?retryWrites=true&w=majority")
