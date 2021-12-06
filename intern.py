@@ -1,12 +1,15 @@
 from logging import Manager
-from pymongo import MongoClient
+from pymongo import MongoClient, collection
 import urllib.parse
 from flask import *
 import bcrypt
 from flask_mail import Mail,Message
 from flask_pymongo import PyMongo
 app=Flask(__name__)
+from werkzeug.utils import secure_filename
+import os
 
+from datetime import datetime
 
 app.config['SECRET_KEY']='rohit'
 app.config['MAIL_SERVER']='smtp.gmail.com'
@@ -15,8 +18,15 @@ app.config['MAIL_USERNAME'] = 'rohit.naikade@gslab.com'
 app.config['MAIL_PASSWORD'] = 'vgshfwkiyxjrnuyp'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
-
+UPLOAD_FOLDER = 'static/profiles'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 mail = Mail(app)
+
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # client=MongoClient("mongodb+srv://GSLab:"+urllib.parse.quote("gslab@123")+"@cluster0.v2mwo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 mongodb_client = PyMongo(app, uri="mongodb://localhost:27017/InterTracker")
@@ -41,6 +51,7 @@ db = mongodb_client.db
 @app.route("/admin",methods=['POST','GET'])
 def adminPage():
 
+    
     error=""
     if request.method=='POST':
         email=request.form['email']
@@ -181,23 +192,59 @@ def profile():
         education=request.form['education']
         country=request.form['country']
         state=request.form['state']
+        city=request.form['city']
 
         print(fname,sname,email,mobNo,address,education,country,state)
-        return render_template("profile.html")
+        print(session['type'])
+
+        collection=db.get_collection(session['type'])
+        collection.update_one({"emailId":email},{"$set":{"fname":fname,"sname":sname,"mobNo":mobNo,"city":city,"address":address,"education":education,"country":country,"state":state}})
+        data=collection.find_one({"emailId":email})
+        return render_template("profile.html",data=data)
     else:
+        collection=db.get_collection(session['type'])
+        data=collection.find_one({"emailId":session['email']})
+        return render_template('profile.html',data=data)
 
+@app.route("/profilepic",methods=['POST'])
+def profilepic():
 
-        return render_template('profile.html')
+    msg=""
+    if request.method== 'POST':
 
-@app.route("/getUsers")
-def getusers():
-    # db=client.get_database("InterTracker")
-    # intern=db.Interns
-    # recs=intern.find()
-    # print(list(recs))
-    return "<p>recs</p>"
-# @app.route("/addusers")
-# def addusers():
+        file = request.files['file']
+        filename = secure_filename(file.filename)
+    
+        if file and allowed_file(file.filename):
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            now = datetime.now()
+            date_time = now.strftime("%m_%d_%Y, %H:%M:%S")
+            
+            old_name = r"static/profiles/"+filename
+            new_name = r"static/profiles/"+date_time+filename
+
+            os.rename(old_name,new_name)
+            print(date_time+filename)
+
+            collection=db.get_collection(session['type'])
+            user=collection.find_one({"emailId":session['email']})
+
+            if user.get("profile") is not None:
+                os.remove(user['profile'])
+                name="static/profiles/"+date_time+filename
+                url=os.environ.get("host")+"static/profiles/"+date_time+filename
+                collection.update_one({"emailId":session['email']},{"$set":{"profile":name,"url":url}})
+            else:
+                name="static/profiles/"+date_time+filename
+                url=os.environ.get("host")+"static/profiles/"+date_time+filename
+                collection.update_one({"emailId":session['email']},{"$set":{"profile":name,"url":url}})
+
+            return redirect('/profile')
+        else:
+            flash('Invalid Uplaod only  png, jpg, jpeg') 
+            return redirect('/')
+    
 
 @app.route("/logout")
 def Logout():
