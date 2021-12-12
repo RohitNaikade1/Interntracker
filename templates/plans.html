@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Plans
+{% endblock %}
+{% block body %}
+
+{% if error %}
+<div class=" mt-3 alert alert-warning alert-dismissible fade show" role="alert">
+    <p style="font-size: 20px;">{{error}}</p>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+
+<body>
+    <div class="container">
+
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card border-0 shadow rounded-3 my-5">
+                    <div class="card-body p-4 p-sm-5">
+                        <h5 class="card-title text-center text-dark mb-5 fs-5">Add/Update Plan</h5>
+                        <form action="{{ url_for('plans') }}" method=post enctype="multipart/form-data">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput" name="planName"
+                                    placeholder="Plan Name">
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="file" name="file" class="form-control" placeholder="Select file">
+
+                            </div>
+
+                            <div class="d-grid">
+                                <button class="btn btn-primary btn-login text-uppercase fw-bold"
+                                    type="submit">Add/Update</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div class="d-flex justify-content-center mt-5">
+            <h1>Existing Plans</h1>
+        </div>
+        <div class="row mt-5">
+            <table class="table table-striped">
+                <thead>
+
+                    <tr>
+                        <th style="font-size: 30px;">Plan Name</th>
+                        <th style="font-size: 30px;">No. of Modules</th>
+                        <th style="font-size: 30px;">Actions</th>
+                        <!-- <th style="font-size: 30px;">Actions</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for d in data %}
+                    <tr>
+                        <td style="font-size: 20px;">{{ d.name }}</td>
+                        <td style="font-size: 20px;">{{ d.count }}</td>
+                        <td style="font-size: 20px;">{{ d.count }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+{% endblock %}

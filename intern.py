@@ -8,6 +8,7 @@ from flask_pymongo import PyMongo
 app=Flask(__name__)
 from werkzeug.utils import secure_filename
 import os
+import pandas as pd
 
 from datetime import datetime
 
@@ -75,8 +76,10 @@ def adminPage():
             return render_template('admin.html',error=error)
         return render_template('admin.html',error=error)
     else:
-        return render_template('admin.html')
+        Managers=db.Managers
+        manager=Managers.find({})
 
+        return render_template('admin.html',managers=manager)
 
 @app.route("/manager",methods=['POST','GET'])
 def managerPage():
@@ -109,8 +112,141 @@ def managerPage():
             return render_template('manager.html',error=error)
         return render_template('manager.html',error=error)
     else:
-        return render_template('manager.html')
+        Mentors=db.Mentors
+        mentor=Mentors.find({})
+        return render_template('manager.html',mentors=mentor)
     
+@app.route("/plans",methods=['POST','GET'])
+def plans():
+    if request.method == 'POST':
+        file=request.files['file']
+        name=request.form['planName']
+
+        Plans=db.Plans
+        plans=Plans.find_one({"name":name})
+
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+        excel_file = "static/profiles/"+file.filename
+        file = pd.ExcelFile(excel_file)
+        length=len(file.sheet_names)
+
+        if plans is None:
+            print("No record")
+            modules=[]
+            
+
+            Plans.insert_one({"name":name,"modules":[]})
+            for i in range(0,length):
+                sheet=pd.read_excel(excel_file,sheet_name=i)
+                moduleName=""
+                for i in sheet['skill module']:
+                    if isinstance(i,str):
+                        moduleName=i
+
+                subModules=[]
+                subModule=[]
+                Assignments=[]
+                PDs=[]
+                for i in sheet['PDs']:
+                    if isinstance(i,float):
+                        PDs.append(i)
+    
+                for i in sheet['Assignments']:
+                    if isinstance(i,str):
+                        Assignments.append(i)
+    
+                for i in sheet['sub module']:
+                    if isinstance(i,str):
+                        subModule.append(i)
+
+                for i in range(0,len(PDs)):
+                    temp={
+                        "name":"",
+                        "PD":0
+                    }
+                    temp['name']=subModule[i]
+                    temp['PD']=PDs[i]
+                    
+                    subModules.append(temp)
+
+                res={
+                    "moduleName":moduleName,
+                    "subModules":subModules,
+                    "Assignments":Assignments
+                }
+                
+                Plans.find_one_and_update({"name":name},{"$push":{"modules":res}})
+        else:
+            for i in range(0,length):
+                sheet=pd.read_excel(excel_file,sheet_name=i)
+                moduleName=""
+                for i in sheet['skill module']:
+                    if isinstance(i,str):
+                        moduleName=i
+
+                subModules=[]
+                subModule=[]
+                Assignments=[]
+                PDs=[]
+                for i in sheet['PDs']:
+                    if isinstance(i,float):
+                        PDs.append(i)
+    
+                for i in sheet['Assignments']:
+                    if isinstance(i,str):
+                        Assignments.append(i)
+    
+                for i in sheet['sub module']:
+                    if isinstance(i,str):
+                        subModule.append(i)
+
+                for i in range(0,len(PDs)):
+                    temp={
+                        "name":"",
+                        "PD":0
+                    }
+                    temp['name']=subModule[i]
+                    temp['PD']=PDs[i]
+                    
+                    subModules.append(temp)
+
+                res={
+                    "moduleName":moduleName,
+                    "subModules":subModules,
+                    "Assignments":Assignments
+                }
+                
+                Plans.find_one_and_update({"name":name},{"$push":{"modules":res}})
+        
+        
+        os.remove(excel_file)
+
+        plans=Plans.find({})
+        data=[]
+
+        for cursor in plans:
+            res={
+                "name":"",
+                "count":0
+            }
+            res['name']=cursor.name
+            res['count']=len(cursor.modules)
+            data.append(res)
+        return render_template("plans.html",data=data)
+    else:
+        Plans=db.Plans
+        plans=Plans.find({})
+        data=[]
+
+        for cursor in plans:
+            res={
+                'name':"",
+                'count':0
+            }
+            res['name']=cursor['name']
+            res['count']=len(cursor['modules'])
+            data.append(res)
+        return render_template("plans.html",data=data)
 
 @app.route("/mentor",methods=['POST','GET'])
 def mentorPage():
@@ -143,7 +279,10 @@ def mentorPage():
             return render_template('mentor.html',error=error)
         return render_template('mentor.html',error=error)
     else:
-        return render_template('mentor.html')
+
+        Interns=db.Interns
+        intern=Interns.find({})
+        return render_template('mentor.html',interns=intern)
 
 @app.route("/")
 def Home():
@@ -245,7 +384,10 @@ def profilepic():
             flash('Invalid Uplaod only  png, jpg, jpeg') 
             return redirect('/')
     
-
+@app.route("/delete")
+def delete():
+    print(request.form['delete'])
+    return render_template("/")
 @app.route("/logout")
 def Logout():
     error="You have signed out successfully!"
