@@ -131,7 +131,6 @@ def plans():
         length=len(file.sheet_names)
 
         if plans is None:
-            print("No record")
             modules=[]
             
 
@@ -177,6 +176,7 @@ def plans():
                 
                 Plans.find_one_and_update({"name":name},{"$push":{"modules":res}})
         else:
+            Plans.find_one_and_update({"name":name},{"$set":{"modules":[]}})
             for i in range(0,length):
                 sheet=pd.read_excel(excel_file,sheet_name=i)
                 moduleName=""
@@ -229,8 +229,8 @@ def plans():
                 "name":"",
                 "count":0
             }
-            res['name']=cursor.name
-            res['count']=len(cursor.modules)
+            res['name']=cursor['name']
+            res['count']=len(cursor['modules'])
             data.append(res)
         return render_template("plans.html",data=data)
     else:
@@ -388,6 +388,7 @@ def profilepic():
 def delete():
     print(request.form['delete'])
     return render_template("/")
+
 @app.route("/logout")
 def Logout():
     error="You have signed out successfully!"
@@ -395,5 +396,33 @@ def Logout():
     session.pop('type',None)
     return render_template('login.html',error=error)
 
+@app.route("/deletePlan",methods=['POST','GET'])
+def deletePlan():
+    if request.method=='POST':
+        Plans=db.Plans
+        Plans.delete_one({"name":request.form['name']})
+
+    Plans=db.Plans
+    plans=Plans.find({})
+    data=[]
+
+    for cursor in plans:
+        res={
+            'name':"",
+            'count':0
+        }
+        res['name']=cursor['name']
+        res['count']=len(cursor['modules'])
+        data.append(res)
+    return render_template("plans.html",data=data)
+
+@app.route("/viewPlan",methods=['POST','GET'])
+def viewPlan():
+    
+    name=request.form['name']
+    Plans=db.Plans
+
+    data=Plans.find_one({"name":name})
+    return render_template("viewPlans.html",data=data)
 if __name__ == '__main__':
     app.run(debug=True,port=5007)

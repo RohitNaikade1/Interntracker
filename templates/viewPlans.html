@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Plans
+{% endblock %}
+{% block body %}
+
+{% if error %}
+<div class=" mt-3 alert alert-warning alert-dismissible fade show" role="alert">
+    <p style="font-size: 20px;">{{error}}</p>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+
+<body>
+
+    <div class="container">
+
+        <div class="d-flex justify-content-center mt-5">
+            <h1>{{ data.name }}</h1>
+        </div>
+        <div class="row mt-5">
+            <table class="table table-striped">
+                <thead>
+
+                    <tr>
+                        <th style="font-size: 30px;">Module Name</th>
+                        <th style="font-size: 30px;">Assignments</th>
+                        <th style="font-size: 30px;">Name</th>
+                        <th style="font-size: 30px;">PDs</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {% for d in data.modules %}
+                    <tr>
+                        <td style="font-size: 20px;">{{ d.moduleName }}</td>
+                        <td style="font-size: 20px;">{{ d.Assignments }}</td>
+                        {% for i in d.subModules %}
+                    <tr>
+                        <td style="font-size: 20px;"></td>
+                        <td style="font-size: 20px;"></td>
+                        <td style="font-size: 20px;">{{ i.name }}</td>
+                        <td style="font-size: 20px;">{{ i.PD }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+        </div>
+    </div>
+</body>
+{% endblock %}

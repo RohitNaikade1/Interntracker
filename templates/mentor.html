@@ -60,7 +60,7 @@ Mentor Section
                         <th style="font-size: 30px;">Intern Name</th>
                         <th style="font-size: 30px;">Email ID</th>
                         <th style="font-size: 30px;">Phone Number</th>
-                        <!-- <th style="font-size: 30px;">Actions</th> -->
+                        <th style="font-size: 30px;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -70,6 +70,14 @@ Mentor Section
                         <td style="font-size: 20px;">{{ intern.fname }} {{ intern.sname }}</td>
                         <td style="font-size: 20px;">{{ intern.emailId }}</td>
                         <td style="font-size: 20px;">{{ intern.mobNo }}</td>
+                        <td style="font-size: 20px;">
+
+                            <form action="{{ url_for('deletePlan')}}" method=post>
+                                <input class="d-none" name="email" type="text" value="{{ intern.emailId }}" />
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+
+                        </td>
                     </tr>
 
                     {% endfor %}

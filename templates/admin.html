@@ -42,7 +42,7 @@
 
   <div class="container">
     <div class="row">
-     
+
       <table class="table table-striped">
         <thead>
 
@@ -50,7 +50,7 @@
             <th style="font-size: 30px;">Manager Name</th>
             <th style="font-size: 30px;">Email ID</th>
             <th style="font-size: 30px;">Phone Number</th>
-            <!-- <th style="font-size: 30px;">Actions</th> -->
+            <th style="font-size: 30px;">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -60,11 +60,18 @@
             <td style="font-size: 20px;">{{ manager.fname }} {{ manager.sname }}</td>
             <td style="font-size: 20px;">{{ manager.emailId }}</td>
             <td style="font-size: 20px;">{{ manager.mobNo }}</td>
-            <!-- <td style="font-size: 20px;"><button type="button" id="delete" onclick=" {{ url_for('delete') }} " value="{{ manager.emailId }}" class="btn btn-danger"><i class="fa fa-trash"></i></button></td> -->
+            <td style="font-size: 20px;">
+
+              <form action="{{ url_for('deletePlan')}}" method=post>
+                <input class="d-none" name="email" type="text" value="{{ manager.emailId }}" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
+
+            </td>
           </tr>
 
           {% endfor %}
-    
+
         </tbody>
       </table>
 
