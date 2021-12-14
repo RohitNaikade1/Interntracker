@@ -33,6 +33,11 @@ Mentor Section
                                 <!-- <label for="floatingInput">Email address</label> -->
                             </div>
                             <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput" name="plan"
+                                    placeholder="Enter Plan Name">
+                                <!-- <label for="floatingInput">Email address</label> -->
+                            </div>
+                            <div class="form-floating mb-3">
                                 <input type="password" class="form-control" id="floatingPassword" name="password"
                                     placeholder="Password">
                                 <!-- <label for="floatingPassword">Password</label> -->
@@ -72,10 +77,10 @@ Mentor Section
                         <td style="font-size: 20px;">{{ intern.mobNo }}</td>
                         <td style="font-size: 20px;">
 
-                            <form action="{{ url_for('deletePlan')}}" method=post>
+                            <form action="{{ url_for('deleteIntern')}}" method=post>
                                 <input class="d-none" name="email" type="text" value="{{ intern.emailId }}" />
                                 <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
+                              </form>
 
                         </td>
                     </tr>

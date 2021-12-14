@@ -72,10 +72,10 @@ Manager
                         <td style="font-size: 20px;">{{ mentor.mobNo }}</td>
                         <td style="font-size: 20px;">
 
-                            <form action="{{ url_for('deletePlan')}}" method=post>
-                              <input class="d-none" name="email" type="text" value="{{ mentor.emailId }}"/>
-                              <button type="submit" class="btn btn-danger">Delete</button>
-                          </form>
+                            <form action="{{ url_for('deleteMentor')}}" method=post>
+                                <input class="d-none" name="email" type="text" value="{{ mentor.emailId }}" />
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                              </form>
 
                           </td>
                     </tr>

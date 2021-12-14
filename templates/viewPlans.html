@@ -16,12 +16,12 @@ Plans
 
 <body>
 
-    <div class="container">
+    <div class="container col-md-12 ml-0">
 
-        <div class="d-flex justify-content-center mt-5">
-            <h1>{{ data.name }}</h1>
+        <div class="mt-5">
+            <h1 class="d-flex justify-content-center">{{ data.name }}</h1>
         </div>
-        <div class="row mt-5">
+        <div class="ml-0 row mt-5">
             <table class="table table-striped">
                 <thead>
 
@@ -30,6 +30,9 @@ Plans
                         <th style="font-size: 30px;">Assignments</th>
                         <th style="font-size: 30px;">Name</th>
                         <th style="font-size: 30px;">PDs</th>
+                        <th style="font-size: 30px;">Start Date</th>
+                        <th style="font-size: 30px;">End Date</th>
+                        <th style="font-size: 30px;">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -37,6 +40,7 @@ Plans
                     {% for d in data.modules %}
                     <tr>
                         <td style="font-size: 20px;">{{ d.moduleName }}</td>
+
                         <td style="font-size: 20px;">{{ d.Assignments }}</td>
                         {% for i in d.subModules %}
                     <tr>
@@ -44,6 +48,27 @@ Plans
                         <td style="font-size: 20px;"></td>
                         <td style="font-size: 20px;">{{ i.name }}</td>
                         <td style="font-size: 20px;">{{ i.PD }}</td>
+                        <td style="font-size: 20px;"></td>
+                        <td style="font-size: 20px;"></td>
+                        <td style="font-size: 20px;">
+
+                            <form  action="{{ url_for('updateStatus')}}" method=post>
+                                <input class="d-none" name="submodule" type="text" value="{{ i.name }}" />
+                                <input class="d-none" name="module" type="text" value="{{ d.moduleName  }}" />
+                                <select class="form-select" name="curr" aria-label="Default select example">
+
+                                    {% if i.status %}
+                                    <option value="Completed">{{ i.status }}</option>
+                                    {% else %}
+                                    <option value="Completed">Completed</option>
+                                    <option value="In progress">In progress</option>
+                                    <option value="Pending" selected>Pending</option>
+                                    {% endif %}
+                                </select>
+                                <button type="submit" class="mt-3 btn btn-warning">Update</button>
+                            </form>
+
+                        </td>
                     </tr>
                     {% endfor %}
                     </tr>
@@ -53,7 +78,7 @@ Plans
                 </tbody>
             </table>
         </div>
-        </div>
+    </div>
     </div>
 </body>
 {% endblock %}

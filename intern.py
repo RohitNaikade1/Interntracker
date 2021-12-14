@@ -254,7 +254,14 @@ def mentorPage():
     if request.method=='POST':
         intern=request.form['intern']
         mentor=request.form['mentor']
+        plan=request.form['plan']
         password=request.form['password']
+
+        Plan=db.Plans
+        plan=Plan.find_one({'name':plan})
+        if plan is None:
+            error="Plan does not exist"
+            return render_template('mentor.html',error=error)
 
         internDB=db.Interns
         mentorDB=db.Mentors
@@ -267,10 +274,10 @@ def mentorPage():
         else:
             salt = bcrypt.gensalt()
             hashed = bcrypt.hashpw(password.encode('utf8'), salt)
-            internDB.insert_one({"emailId":intern,"password":hashed})
+            internDB.insert_one({"emailId":intern,"password":hashed,"inductionPlan":plan})
             mentorDB.update_one({"emailId":mentor},{'$push':{"interns":intern}},upsert=True)
 
-            msg = Message('Your Intern Account is created Successfully on InternTracker under Mentor ' + mentor, sender = 'naikaderohit833@gmail.com', recipients = [intern])
+            msg = Message('Your Intern Account is created Successfully on InternTracker under Mentor ' + mentor +'.Login on InternTracker portal and check your induction plan Named '+plan['name'], sender = 'naikaderohit833@gmail.com', recipients = [intern])
             msg.body = "Your Email address is" + intern + "And Password is " + password
             mail.send(msg)
             print("email sent",msg)
@@ -419,10 +426,72 @@ def deletePlan():
 @app.route("/viewPlan",methods=['POST','GET'])
 def viewPlan():
     
-    name=request.form['name']
-    Plans=db.Plans
-
-    data=Plans.find_one({"name":name})
+    data={}
+    if session['type'] == 'Interns':
+        Interns=db.Interns
+        data=Interns.find_one({"emailId":session['email']})
+        data=data['inductionPlan']
+    else:
+        name=request.form['name']
+        Plans=db.Plans
+        data=Plans.find_one({"name":name})
+    
     return render_template("viewPlans.html",data=data)
+
+@app.route("/deleteManager",methods=['POST'])
+def deleteManager():
+    if request.method == 'POST':
+        email=request.form['email']
+        Manager=db.Managers
+
+        Manager.delete_one({"emailId":email})
+        manager=Manager.find({})
+
+        return render_template('admin.html',managers=manager)
+    else:
+        Manager=db.Managers
+        manager=Manager.find({})
+
+        return render_template('admin.html',managers=manager)
+
+@app.route("/deleteMentor",methods=['POST'])
+def deleteMentor():
+    if request.method == 'POST':
+        email=request.form['email']
+        Mentor=db.Mentors
+
+        Mentor.delete_one({"emailId":email})
+        mentor=Mentor.find({})
+
+        return render_template('manager.html',mentors=mentor)
+    else:
+        Mentor=db.Mentors
+        mentor=Mentor.find({})
+
+        return render_template('manager.html',mentors=mentor)
+
+@app.route("/deleteIntern",methods=['POST'])
+def deleteIntern():
+    if request.method == 'POST':
+        email=request.form['email']
+        Intern=db.Interns
+
+        Intern.delete_one({"emailId":email})
+        intern=Intern.find({})
+
+        return render_template('mentor.html',interns=intern)
+    else:
+        Intern=db.Interns
+        intern=Intern.find({})
+
+        return render_template('admin.html',interns=intern)
+
+
+@app.route("/updateStatus",methods=['POST'])
+def updateStatus():
+
+    print(request.form['curr'],request.form['module'],request.form['submodule'])
+
+    return redirect(url_for("viewPlan"))
 if __name__ == '__main__':
     app.run(debug=True,port=5007)

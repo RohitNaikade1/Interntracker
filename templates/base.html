@@ -50,7 +50,9 @@
                     <a class="nav-link" href="{{ url_for('profile')}}">Profile</a>
                 </li>
                 {% elif session['type'] == 'Managers' %}
-
+                <li class="nav-item ">
+                    <a class="nav-link" href="{{ url_for('managerPage')}}">Manager Section</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('mentorPage')}}">Mentor Section</a>
                 </li>
@@ -62,18 +64,24 @@
                 </li>
                 {% elif session['type'] == 'Mentors' %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Mentor Section</a>
+                    <a class="nav-link" href="{{ url_for('mentorPage')}}">Mentor Section</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('profile')}}">Profile</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('plans')}}">Plans</a>
+                </li>
+                
                 {% elif session['type'] == 'Interns' %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Intern Section</a>
+                    <a class="nav-link" href="{{ url_for('viewPlan')}}">Intern Section</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('profile')}}">Profile</a>
                 </li>
+                
                 {% else %}
 
                 {% endif %}

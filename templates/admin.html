@@ -62,7 +62,7 @@
             <td style="font-size: 20px;">{{ manager.mobNo }}</td>
             <td style="font-size: 20px;">
 
-              <form action="{{ url_for('deletePlan')}}" method=post>
+              <form action="{{ url_for('deleteManager')}}" method=post>
                 <input class="d-none" name="email" type="text" value="{{ manager.emailId }}" />
                 <button type="submit" class="btn btn-danger">Delete</button>
               </form>
