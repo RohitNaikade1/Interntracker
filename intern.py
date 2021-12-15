@@ -161,7 +161,10 @@ def plans():
                 for i in range(0,len(PDs)):
                     temp={
                         "name":"",
-                        "PD":0
+                        "PD":0,
+                        "status":"Pending",
+                        "startDate":"",
+                        "endDate":""
                     }
                     temp['name']=subModule[i]
                     temp['PD']=PDs[i]
@@ -203,7 +206,10 @@ def plans():
                 for i in range(0,len(PDs)):
                     temp={
                         "name":"",
-                        "PD":0
+                        "PD":0,
+                        "status":"Pending",
+                        "startDate":"",
+                        "endDate":""
                     }
                     temp['name']=subModule[i]
                     temp['PD']=PDs[i]
@@ -490,8 +496,24 @@ def deleteIntern():
 @app.route("/updateStatus",methods=['POST'])
 def updateStatus():
 
-    print(request.form['curr'],request.form['module'],request.form['submodule'])
+    Interns=db.Interns
 
+    print(request.form['start'],request.form['end'],request.form['submodule'])
+
+    data=Interns.find_one({"inductionPlan.modules.subModules.name":request.form['submodule']})
+    # print(data)
+
+    # induction=data['inductionPlan']
+    for rec in data['inductionPlan']['modules']:
+        if rec['moduleName'] == request.form['module']:
+            for d in rec['subModules']:
+                if d['name'] == request.form['submodule']:
+                    d['status']=request.form['curr']
+                    d['startDate']=request.form['start']
+                    d['endDate']=request.form['end']
+
+    Interns.update_one({"emailId":session['email']},{"$set":{"inductionPlan":data['inductionPlan']}})
+    # print(data)
     return redirect(url_for("viewPlan"))
 if __name__ == '__main__':
     app.run(debug=True,port=5007)
