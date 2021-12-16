@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Leaves
+{% endblock %}
+{% block body %}
+
+{% if error %}
+<div class=" mt-3 alert alert-warning alert-dismissible fade show" role="alert">
+    <p style="font-size: 20px;">{{error}}</p>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card border-0 shadow rounded-3 my-5">
+                    <div class="card-body p-4 p-sm-5">
+                        <h5 class="card-title text-center text-dark mb-5 fs-5">Leaves Management</h5>
+                        <form action="{{ url_for('leaves') }}" method=post>
+                            <div class="form-floating mb-3">
+                                <input type="date" class="form-control" id="floatingInput" name="date">
+                                <!-- <label for="floatingInput">Email address</label> -->
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput" name="type"
+                                    placeholder="Leave Type">
+                                <!-- <label for="floatingInput">Email address</label> -->
+                            </div>
+                            <div class="form-floating mb-3">
+                                <textarea type="text" class="form-control" id="floatingInput" name="reason"
+                                    placeholder="Reason"></textarea>
+                                <!-- <label for="floatingInput">Email address</label> -->
+                            </div>
+                
+                            <div class="d-grid">
+                                <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Add Record</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+
+            <table class="table table-striped">
+                <thead>
+
+                    <tr>
+                        <th style="font-size: 30px;">Date</th>
+                        <th style="font-size: 30px;">Leave Type</th>
+                        <th style="font-size: 30px;">Reason</th>
+                        <th style="font-size: 30px;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {% for data in data %}
+                    <tr>
+                        <td style="font-size: 20px;">{{ data.date }}</td>
+                        <td style="font-size: 20px;">{{ data.type }}</td>
+                        <td style="font-size: 20px;">{{ data.reason }}</td>
+
+                        {% if data.remarks %}
+                        <td style="font-size: 20px;">{{ data.remarks }}</td>
+                        {% else %}
+                        <td style="font-size: 20px;"></td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</body>
+{% endblock %}

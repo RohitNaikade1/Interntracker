@@ -1,7 +1,66 @@
 {% extends "base.html" %}
 {% block title %}
-    Home
+Home
 {% endblock %}
 {% block body %}
-    <p>Home Page</p>
+
+{% if session['type'] == 'Mentors' %}
+
+<div class="container">
+    <div class="d-flex justify-content-center mt-5">
+        <h1>Leave Applications.</h1>
+    </div>
+    <div class="row">
+        <table class="table table-striped mt-5">
+            <thead>
+
+                <tr>
+                    <th style="font-size: 30px;">Intern's EmailId</th>
+                    <th style="font-size: 30px;">Date</th>
+                    <th style="font-size: 30px;">Leave Type</th>
+                    <th style="font-size: 30px;">Reason</th>
+                    <th style="font-size: 30px;">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for data in data %}
+
+                {% if data.visible %}
+                <tr>
+                    <td style="font-size: 20px;">{{ data.emailId }}</td>
+                    <td style="font-size: 20px;">{{ data.date }}</td>
+                    <td style="font-size: 20px;">{{ data.type }}</td>
+                    <td style="font-size: 20px;">{{ data.reason }}</td>
+                    <td style="font-size: 20px;">
+                        <div class="row">
+                        <form class="mr-2" action="{{ url_for('leaveActions')}}" method=post>
+                            <input class="d-none" name="name" type="text" value="Approve"/>
+                            <input class="d-none" name="key" type="text" value="{{ data.date }}"/>
+                            <input class="d-none" name="email" type="text" value="{{ data.emailId }}"/>
+                            <button type="submit" class="btn btn-success">Approve</button>
+                        </form>
+                        <form action="{{ url_for('leaveActions')}}" method=post>
+                          <input class="d-none" name="name" type="text" value="Reject"/>
+                          <input class="d-none" name="key" type="text" value="{{ data.date }}"/>
+                          <input class="d-none" name="email" type="text" value="{{ data.emailId }}"/>
+                          <button type="submit" class="btn btn-danger">Reject</button>
+                      </form>
+                     </div>
+                      </td>
+                
+                </tr>
+                {% endif %}
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+{% else %}
+<p>Home Page</p>
+{% endif %}
+
 {% endblock %}

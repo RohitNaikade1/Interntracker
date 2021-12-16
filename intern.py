@@ -280,7 +280,7 @@ def mentorPage():
         else:
             salt = bcrypt.gensalt()
             hashed = bcrypt.hashpw(password.encode('utf8'), salt)
-            internDB.insert_one({"emailId":intern,"password":hashed,"inductionPlan":plan})
+            internDB.insert_one({"emailId":intern,"password":hashed,"inductionPlan":plan,"mentor":mentor})
             mentorDB.update_one({"emailId":mentor},{'$push':{"interns":intern}},upsert=True)
 
             msg = Message('Your Intern Account is created Successfully on InternTracker under Mentor ' + mentor +'.Login on InternTracker portal and check your induction plan Named '+plan['name'], sender = 'naikaderohit833@gmail.com', recipients = [intern])
@@ -299,6 +299,12 @@ def mentorPage():
 
 @app.route("/")
 def Home():
+
+    if session['type'] == "Mentors":
+        Leaves=db.Leaves
+        data=Leaves.find({})
+        return render_template('home.html',data=data)
+
     return render_template('home.html')
 
 @app.route("/login",methods=['GET','POST'])
@@ -515,5 +521,43 @@ def updateStatus():
     Interns.update_one({"emailId":session['email']},{"$set":{"inductionPlan":data['inductionPlan']}})
     # print(data)
     return redirect(url_for("viewPlan"))
+
+@app.route("/leaves",methods=['POST','GET'])
+def leaves():
+
+    if request.method == 'POST':
+        date=request.form['date']
+        type=request.form['type']
+        reason=request.form['reason']
+
+        Leaves=db.Leaves
+        Interns=db.Interns
+        intern=Interns.find_one({"emailId":session['email']})
+        msg = Message("Leave application from "+ session['email'], sender = 'naikaderohit833@gmail.com', recipients = [intern['mentor']])
+        msg.body = "You have received a leave application from " + session['email'] +".Login and Approve/Reject the same and notify him/her about Remark."
+        mail.send(msg)
+        Leaves.insert_one({"date":date,"type":type,"reason":reason,"emailId":session['email'],"visible":True})
+
+        data=Leaves.find({})
+        return render_template("leaves.html",data=data)
+    else:
+        Leaves=db.Leaves
+        data=Leaves.find({})
+        return render_template("leaves.html",data=data)
+
+@app.route("/leaveActions",methods=['POST'])
+def leaveActions():
+    name=request.form['name']
+    date=request.form['key']
+    email=request.form['email']
+    Leaves=db.Leaves
+    Leaves.update_one({"date":date,"emailId":email,"visible":True},{"$set":{"remarks":name,"visible":False}})
+
+    msg = Message("Status of Leave Application!", sender = 'naikaderohit833@gmail.com', recipients = [email])
+    msg.body = "Your Mentor have reacted on your leave application.your application remark is "+name
+    mail.send(msg)
+
+    return redirect(url_for('Home'))
+
 if __name__ == '__main__':
     app.run(debug=True,port=5007)

@@ -68,11 +68,17 @@ Plans
                                 <input class="d-none" name="module" type="text" value="{{ d.moduleName  }}" />
                                 <select class="form-select" name="curr" aria-label="Default select example">
 
-                                    {% if i.status %}
-                                    <option value="Completed">{{ i.status }}</option>
+                                    {% if i.status == "Completed" %}
+                                    <option value="Completed" selected>Completed</option>
+                                    <option value="In progress">In progress</option>
+                                    <option value="Pending" >Pending</option>
+                                    {% elif i.status == "In progress" %}
+                                    <option value="Completed" >Completed</option>
+                                    <option value="In progress" selected>In progress</option>
+                                    <option value="Pending" >Pending</option>
                                     {% else %}
                                     <option value="Completed">Completed</option>
-                                    <option value="In progress">In progress</option>
+                                    <option value="In progress" >In progress</option>
                                     <option value="Pending" selected>Pending</option>
                                     {% endif %}
                                 </select>
