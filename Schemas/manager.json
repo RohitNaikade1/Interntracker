@@ -1,0 +1,16 @@
+{
+   "fname":"",
+   "lname":"",
+   "emailId":"",
+   "Education":"",
+   "city":"",
+   "country":"",
+   "state":"",
+   "password":"",
+   "Mentors":[
+      
+   ],
+   "phoneNo":"",
+   "Address":"",
+   "profileImage":""
+}

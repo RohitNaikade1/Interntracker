@@ -1,0 +1,17 @@
+{
+   "fname":"",
+   "lname":"",
+   "emailId":"",
+   "Education":"",
+   "city":"",
+   "country":"",
+   "state":"",
+   "password":"",
+   "Interns":[
+      
+   ],
+   "manager":"",
+   "phoneNo":"",
+   "Address":"",
+   "profileImage":""
+}
