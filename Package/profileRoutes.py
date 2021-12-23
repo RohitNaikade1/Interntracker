@@ -1,5 +1,7 @@
 from Package import *
 
+import datetime
+
 @app.route("/profile",methods=['GET','POST'])
 def profile():
     if request.method == 'POST':
@@ -16,8 +18,22 @@ def profile():
         print(fname,sname,email,mobNo,address,education,country,state)
         print(session['type'])
 
-        collection=db.get_collection(session['type'])
-        collection.update_one({"emailId":email},{"$set":{"fname":fname,"sname":sname,"mobNo":mobNo,"city":city,"address":address,"education":education,"country":country,"state":state}})
+        if session['type'] == 'Managers':
+            collection=db.get_collection(session['type'])
+            
+
+            if request.form['type'] == "Once in a week":
+                today = datetime.date.today()
+                collection.update_one({"emailId":email},{"$set":{"nextDate":str(today + datetime.timedelta(days=-today.weekday(), weeks=1)),"notifications":request.form['type'],"fname":fname,"sname":sname,"mobNo":mobNo,"city":city,"address":address,"education":education,"country":country,"state":state}})
+            else:
+                today = datetime.date.today()
+                collection.update_one({"emailId":email},{"$set":{"nextDate":str(today + datetime.timedelta(days=-today.weekday(), weeks=2)),"notifications":request.form['type'],"fname":fname,"sname":sname,"mobNo":mobNo,"city":city,"address":address,"education":education,"country":country,"state":state}})
+
+            
+        else:
+            collection=db.get_collection(session['type'])
+            collection.update_one({"emailId":email},{"$set":{"fname":fname,"sname":sname,"mobNo":mobNo,"city":city,"address":address,"education":education,"country":country,"state":state}})
+        
         data=collection.find_one({"emailId":email})
         return render_template("profile.html",data=data)
     else:

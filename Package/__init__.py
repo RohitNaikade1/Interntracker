@@ -7,8 +7,6 @@ from werkzeug.utils import secure_filename
 import os
 import pandas as pd
 
-from datetime import *
-
 app.config['SECRET_KEY']='rohit'
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
