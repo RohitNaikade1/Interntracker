@@ -5,8 +5,12 @@ def deleteManager():
     if request.method == 'POST':
         email=request.form['email']
         Manager=db.Managers
+        Mentor=db.Mentors
+
+        Mentor.update_many({"manager":email},{"$set":{"manager":None}})
 
         Manager.delete_one({"emailId":email})
+        
         manager=Manager.find({})
 
         return render_template('admin.html',managers=manager)
@@ -39,10 +43,27 @@ def managerPage():
             mentorDB.insert_one({"emailId":mentor,"password":hashed,"manager":manager})
             managerDB.update_one({"emailId":manager},{'$push':{"mentors":mentor}},upsert=True)
 
-            msg = Message('Your Mentor Account is created Successfully on InternTracker under Manager ' + manager, sender = 'naikaderohit833@gmail.com', recipients = [mentor])
-            msg.body = "Your Email address is" + mentor + "And Password is " + password
-            mail.send(msg)
-            print("email sent",msg)
+            msg = EmailMessage()
+
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+
+                msg['Subject'] = 'Your Mentor Account is created Successfully on InternTracker under Manager ' + manager
+                msg['From'] = EMAIL_ADDRESS
+                msg['To'] = mentor
+                msg.add_alternative("""\
+
+                            <!DOCTYPE html>
+                                    <body>
+                                        <h1> Hello """ + mentor + """,</h1>
+                                        <p> Your Email address is """ + mentor + """ And Password is """ + password + """</p>
+                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
+                                    </body>
+                                    </html>
+                                    """, subtype='html')
+
+                smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
+
+                smtp.send_message(msg)
 
             error="Mentor added Successfully"
             return render_template('manager.html',error=error)

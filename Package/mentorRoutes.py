@@ -1,3 +1,4 @@
+import datetime
 from Package import *
 
 @app.route("/deleteMentor",methods=['POST'])
@@ -6,7 +7,9 @@ def deleteMentor():
         email=request.form['email']
         Mentor=db.Mentors
         Managers=db.Managers
+        Interns=db.Interns
 
+        Interns.update_many({"mentor":email},{"$set":{"mentor":None}})
         Managers.update_one({"emailId":session['email']},{"$pull":{"mentors":email}})
         Mentor.delete_one({"emailId":email})
         mentor=Mentor.find({})
@@ -44,14 +47,31 @@ def mentorPage():
         else:
             salt = bcrypt.gensalt()
             hashed = bcrypt.hashpw(password.encode('utf8'), salt)
-            internDB.insert_one({"emailId":intern,"password":hashed,"inductionPlan":plan,"mentor":mentor,"lastUpdate":date.today()})
+            internDB.insert_one({"emailId":intern,"password":hashed,"inductionPlan":plan,"mentor":mentor,"lastUpdate":str(datetime.date.today())})
             mentorDB.update_one({"emailId":mentor},{'$push':{"interns":intern}},upsert=True)
 
-            msg = Message('Your Intern Account is created Successfully on InternTracker under Mentor ' + mentor +'.Login on InternTracker portal and check your induction plan Named '+plan['name'], sender = 'naikaderohit833@gmail.com', recipients = [intern])
-            msg.body = "Your Email address is" + intern + "And Password is " + password
-            mail.send(msg)
-            print("email sent",msg)
+            msg = EmailMessage()
 
+            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+
+                msg['Subject'] = 'Your Intern Account is created Successfully on InternTracker under Mentor ' + mentor +'.'
+                msg['From'] = EMAIL_ADDRESS
+                msg['To'] = intern
+                msg.add_alternative("""\
+
+                            <!DOCTYPE html>
+                                    <body>
+                                        <h1> Hello """ + intern + """,</h1>
+                                        <p>Login on InternTracker portal and check your induction plan Named """+ plan['name'] +"""</p>
+                                        <p> Your Email address is """ + intern + """ And Password is """ + password + """</p>
+                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
+                                    </body>
+                                    </html>
+                                    """, subtype='html')
+
+                smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
+
+                smtp.send_message(msg)
             error="Intern added Successfully"
             return render_template('mentor.html',error=error)
         return render_template('mentor.html',error=error)

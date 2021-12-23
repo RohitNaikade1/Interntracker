@@ -1,19 +1,22 @@
 from flask import *
+from dotenv import load_dotenv
 import bcrypt
 from flask_mail import Mail,Message
 from flask_pymongo import PyMongo
 app=Flask(__name__)
 from werkzeug.utils import secure_filename
+import smtplib
+from email.message import EmailMessage
 import os
 import pandas as pd
 
-app.config['SECRET_KEY']='rohit'
-app.config['MAIL_SERVER']='smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'rohit.naikade@gslab.com'
-app.config['MAIL_PASSWORD'] = 'vgshfwkiyxjrnuyp'
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_USE_SSL'] = True
+load_dotenv()
+
+EMAIL_ADDRESS = os.getenv('MAIL_USERNAME')
+MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+
+app.config['SECRET_KEY']=os.getenv('SECRET_KEY')
+
 UPLOAD_FOLDER = 'static/profiles'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024

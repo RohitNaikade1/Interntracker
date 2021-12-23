@@ -1,95 +1,163 @@
 from Package import *
 from datetime import *
-import smtplib
 
 def numOfDays(date1, date2):
     return (date1-date2).days
 
-gmail_user = 'rohit.naikade@gslab.com'
-gmail_password = 'vgshfwkiyxjrnuyp'
 
-sent_from = gmail_user
-
-day=datetime.today().strftime('%A')
+day = datetime.today().strftime('%A')
 
 if day == "Saturday" or day == "Sunday":
     print("Enjoy weekend")
 else:
-    Mentors=db.Mentors
-    data=Mentors.find({})
+    Mentors = db.Mentors
+    data = Mentors.find({})
     for d in data:
-        Interns=db.Interns
-        
+        Interns = db.Interns
+
         for intern in d['interns']:
-            data=Interns.find({"emailId":intern})
-            
+            data = Interns.find({"emailId": intern})
+
             for res in data:
 
-                flag=False
+                flag = False
                 for recs in res['leaves']:
                     if recs['date'] == date.today() and recs['remarks'] == "Approve":
-                        flag=True
+                        flag = True
 
                 if res['lastUpdate'] != date.today() and flag == False:
-                    first=str(date.today())
+                    first = str(date.today())
                     date1 = datetime.strptime(first, "%Y-%m-%d")
-                    d1=date1.day       
-                    m1=date1.month    
-                    y1=date1.year 
+                    d1 = date1.day
+                    m1 = date1.month
+                    y1 = date1.year
 
                     date2 = datetime.strptime(res['lastUpdate'], "%Y-%m-%d")
-                    d2=date2.day       
-                    m2=date2.month    
-                    y2=date2.year 
+                    d2 = date2.day
+                    m2 = date2.month
+                    y2 = date2.year
 
-                    date3 = date(y1,m1,d1)
-                    date4 = date(y2,m2,d2)
+                    date3 = date(y1, m1, d1)
+                    date4 = date(y2, m2, d2)
 
-                    diff=numOfDays(date3,date4)
-                    
+                    diff = numOfDays(date3, date4)
+
                     if day == "Monday":
-                        diff=diff-2
+                        diff = diff-2
 
                     if diff >= 3:
 
-                        subject = 'Induction Plan!'
-                        body = "Hello "+d['manager']+", The intern with email address "+ res['emailId']+" haven't updated induction plan sheet from last 3 days.plaese take a look!"
+                        to = [d['manager'], d['emailId']]
+                        msg = EmailMessage()
 
-                        email_text = """\
-                        From: %s
-                        To: %s
-                        Subject: %s
+                        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
 
-                        %s\
-                        """ % (sent_from, d['manager'], subject, body)
+                            msg['Subject'] = 'Induction Plan Updates!'
+                            msg['From'] = EMAIL_ADDRESS
+                            msg['To'] = ','.join(to)
+                            msg.set_content("Hello "+d['manager']+", The intern with email address " + res['emailId'] +
+                                            " haven't updated induction plan sheet from last 3 days.plaese take a look!")
 
-                        smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-                        smtp_server.ehlo()
-                        smtp_server.login(gmail_user, gmail_password)
-                        smtp_server.sendmail(sent_from, d['manager'], email_text)
-                        smtp_server.close()
-                        print ("Email sent successfully!")   
+                            Managers = db.Managers
+                            managerRec = Managers.find_one(
+                                {"emailId": d['manager']})
+
+                            if 'fname' in managerRec:
+
+                                if 'fname' in res:
+                                    msg.add_alternative("""\
+
+                                    <!DOCTYPE html>
+                                    <body>
+                                        <h1> Hello """ + managerRec['fname'] + """,</h1>
+                                        <p> The intern """ + res['fname'] +" "+ res['sname'] + """ with email address """+ res['emailId']+ """ haven't updated induction plan sheet from last 3 days.plaese take a look!</p>
+                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
+                                    </body>
+                                </html>
+                                """, subtype='html')
+
+                                else:
+                                    msg.add_alternative("""\
+
+                                    <!DOCTYPE html>
+                                    <body>
+                                        <h1> Hello """ + managerRec['fname'] + """,</h1>
+                                        <p> The intern with email address """ + res['emailId'] + """ haven't updated induction plan sheet from last 3 days.plaese take a look!</p>
+                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
+                                    </body>
+                                </html>
+                                """, subtype='html')
+                            else:
+                                if 'fname' in res:
+                                    msg.add_alternative("""\
+
+                                    <!DOCTYPE html>
+                                    <body>
+                                        <h1> Hello """ + managerRec['fname'] + """,</h1>
+                                        <p> The intern """ + res['fname'] +" "+ res['sname'] + """ with email address """+ res['emailId']+ """ haven't updated induction plan sheet from last 3 days.plaese take a look!</p>
+                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
+                                    </body>
+                                    </html>
+                                    """, subtype='html')
+
+                                else:
+                                    msg.add_alternative("""\
+
+                                    <!DOCTYPE html>
+                                    <body>
+                                        <h1> Hello """ + managerRec['fname'] + """,</h1>
+                                        <p> The intern with email address """ + res['emailId'] + """ haven't updated induction plan sheet from last 3 days.plaese take a look!</p>
+                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
+                                    </body>
+                                </html>
+                                """, subtype='html')
+
+                            smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
+
+                            smtp.send_message(msg)
+                        print("Email sent successfully!")
 
                     else:
-                        
+
                         print("Intern")
-                        subject = 'Induction Plan!'
-                        body = "Hello "+res['emailId']+",You haven't updated your today's induction work on induction plan.update it by tomorrow morning itself."
+                        msg = EmailMessage()
 
-                        email_text = """\
-                        From: %s
-                        To: %s
-                        Subject: %s
+                        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
 
-                        %s\
-                        """ % (sent_from, res['emailId'], subject, body)
+                            msg['Subject'] = 'Induction Plan Updates!'
+                            msg['From'] = EMAIL_ADDRESS
+                            msg['To'] = res['emailId']
+                            msg.set_content("Yes Reached")
 
-                        smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-                        smtp_server.ehlo()
-                        smtp_server.login(gmail_user, gmail_password)
-                        smtp_server.sendmail(sent_from, res['emailId'], email_text)
-                        smtp_server.close()
-                        print ("Email sent successfully!")    
-                               
+                            if 'fname' in res:
+                                    msg.add_alternative("""\
+
+                                    <!DOCTYPE html>
+                                    <body>
+                                        <h1> Hello """ + res['fname'] +" "+ res['sname'] +  """,</h1>
+                                        <p> You haven't updated today's induction plan sheet.update it ASAP!</p>
+                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
+                                    </body>
+                                    </html>
+                                    """, subtype='html')
+
+                            else:
+                                    msg.add_alternative("""\
+
+                                    <!DOCTYPE html>
+                                    <body>
+                                        <h1> Hello """ + res['emailId'] + """,</h1>
+                                        <p> You haven't updated today's induction plan sheet.update it ASAP!</p>
+                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
+                                    </body>
+                                </html>
+                                """, subtype='html')
+
+                            smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
+
+                            smtp.send_message(msg)
+                        print("Email sent successfully!")
+
                 elif flag == True:
-                    Interns.update_one({"emailId":intern},{"lastUpdate":date.today()})
+                    Interns.update_one({"emailId": intern}, {
+                                       "lastUpdate": date.today()})
