@@ -151,7 +151,7 @@ Profile
                                                                         placeholder="City" value=""></div>
                                                         {% endif %}
 
-                                                        {% if session['type'] == 'Managers' %}
+                                                        {% if session['type'] == 'Managers' or session['type'] == 'Mentors' %}
 
                                                         {% if data.notifications and data.notifications == "Once in a week" %}
                                                         <div class="col-md-12"><label class="labels">Notification

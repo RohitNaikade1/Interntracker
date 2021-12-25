@@ -18,7 +18,7 @@ def profile():
         print(fname,sname,email,mobNo,address,education,country,state)
         print(session['type'])
 
-        if session['type'] == 'Managers':
+        if session['type'] == 'Managers' or session['type'] == 'Mentors':
             collection=db.get_collection(session['type'])
             
 

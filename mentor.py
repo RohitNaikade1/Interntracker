@@ -1,163 +1,65 @@
 from Package import *
 from datetime import *
+from pretty_html_table import build_table
+from send_mail import send_mail
+from getPD import get_gdp_data
 
-def numOfDays(date1, date2):
-    return (date1-date2).days
+Mentors = db.Mentors
 
+data = Mentors.find({})
 
-day = datetime.today().strftime('%A')
+for mentor in data:
+    if mentor['nextDate'] == date.today():
 
-if day == "Saturday" or day == "Sunday":
-    print("Enjoy weekend")
-else:
-    Mentors = db.Mentors
-    data = Mentors.find({})
-    for d in data:
         Interns = db.Interns
+        intern = Interns.find({"mentor": mentor['emailId']})
 
-        for intern in d['interns']:
-            data = Interns.find({"emailId": intern})
+        modules = []
+        name = []
+        email = []
+        percentage = []
 
-            for res in data:
+        for d in intern:
+            modules.append(d['inductionPlan']['name'])
 
-                flag = False
-                for recs in res['leaves']:
-                    if recs['date'] == date.today() and recs['remarks'] == "Approve":
-                        flag = True
+            if 'fname' in d and 'sname' in d:
+                name.append(d['fname']+" "+d['sname'])
+                email.append(d['emailId'])
+            else:
+                name.append("Not updated")
+                email.append(d['emailId'])
 
-                if res['lastUpdate'] != date.today() and flag == False:
-                    first = str(date.today())
-                    date1 = datetime.strptime(first, "%Y-%m-%d")
-                    d1 = date1.day
-                    m1 = date1.month
-                    y1 = date1.year
+            temp = []
+            for module in d['inductionPlan']['modules']:
+                completed = 0
+                for mdl in module['subModules']:
+                    if mdl['status'] == 'Completed':
+                        completed = completed+1
 
-                    date2 = datetime.strptime(res['lastUpdate'], "%Y-%m-%d")
-                    d2 = date2.day
-                    m2 = date2.month
-                    y2 = date2.year
+                temp.append(
+                    (completed/len(module['subModules']))*100)
+            print(temp, sum(temp), len(d['inductionPlan']['modules']))
+            percentage.append(
+                str(int(sum(temp)/len(d['inductionPlan']['modules'])))+"%")
+        data = get_gdp_data(modules, percentage, name, email)
+        output = build_table(data, 'blue_light')
+        subject = "Induction stats!"
+        receiver = [mentor['emailId']]
+        send_mail(output, subject, receiver)
+        print(receiver)
 
-                    date3 = date(y1, m1, d1)
-                    date4 = date(y2, m2, d2)
 
-                    diff = numOfDays(date3, date4)
+        if mentor['notifications'] == "Once in a week":
+            today = datetime.date.today()
+            Mentors.update_one({"emailId": mentor['emailId']}, {"$set": {"nextDate": str(
+                today + datetime.timedelta(days=-today.weekday(), weeks=1))}})
+        else:
+            today = datetime.date.today()
+            Mentors.update_one({"emailId": mentor['emailId']}, {"$set": {"nextDate": str(
+                today + datetime.timedelta(days=-today.weekday(), weeks=2))}})
 
-                    if day == "Monday":
-                        diff = diff-2
+        pass
+    else:
 
-                    if diff >= 3:
-
-                        to = [d['manager'], d['emailId']]
-                        msg = EmailMessage()
-
-                        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-
-                            msg['Subject'] = 'Induction Plan Updates!'
-                            msg['From'] = EMAIL_ADDRESS
-                            msg['To'] = ','.join(to)
-                            msg.set_content("Hello "+d['manager']+", The intern with email address " + res['emailId'] +
-                                            " haven't updated induction plan sheet from last 3 days.plaese take a look!")
-
-                            Managers = db.Managers
-                            managerRec = Managers.find_one(
-                                {"emailId": d['manager']})
-
-                            if 'fname' in managerRec:
-
-                                if 'fname' in res:
-                                    msg.add_alternative("""\
-
-                                    <!DOCTYPE html>
-                                    <body>
-                                        <h1> Hello """ + managerRec['fname'] + """,</h1>
-                                        <p> The intern """ + res['fname'] +" "+ res['sname'] + """ with email address """+ res['emailId']+ """ haven't updated induction plan sheet from last 3 days.plaese take a look!</p>
-                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
-                                    </body>
-                                </html>
-                                """, subtype='html')
-
-                                else:
-                                    msg.add_alternative("""\
-
-                                    <!DOCTYPE html>
-                                    <body>
-                                        <h1> Hello """ + managerRec['fname'] + """,</h1>
-                                        <p> The intern with email address """ + res['emailId'] + """ haven't updated induction plan sheet from last 3 days.plaese take a look!</p>
-                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
-                                    </body>
-                                </html>
-                                """, subtype='html')
-                            else:
-                                if 'fname' in res:
-                                    msg.add_alternative("""\
-
-                                    <!DOCTYPE html>
-                                    <body>
-                                        <h1> Hello """ + managerRec['fname'] + """,</h1>
-                                        <p> The intern """ + res['fname'] +" "+ res['sname'] + """ with email address """+ res['emailId']+ """ haven't updated induction plan sheet from last 3 days.plaese take a look!</p>
-                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
-                                    </body>
-                                    </html>
-                                    """, subtype='html')
-
-                                else:
-                                    msg.add_alternative("""\
-
-                                    <!DOCTYPE html>
-                                    <body>
-                                        <h1> Hello """ + managerRec['fname'] + """,</h1>
-                                        <p> The intern with email address """ + res['emailId'] + """ haven't updated induction plan sheet from last 3 days.plaese take a look!</p>
-                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
-                                    </body>
-                                </html>
-                                """, subtype='html')
-
-                            smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
-
-                            smtp.send_message(msg)
-                        print("Email sent successfully!")
-
-                    else:
-
-                        print("Intern")
-                        msg = EmailMessage()
-
-                        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-
-                            msg['Subject'] = 'Induction Plan Updates!'
-                            msg['From'] = EMAIL_ADDRESS
-                            msg['To'] = res['emailId']
-                            msg.set_content("Yes Reached")
-
-                            if 'fname' in res:
-                                    msg.add_alternative("""\
-
-                                    <!DOCTYPE html>
-                                    <body>
-                                        <h1> Hello """ + res['fname'] +" "+ res['sname'] +  """,</h1>
-                                        <p> You haven't updated today's induction plan sheet.update it ASAP!</p>
-                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
-                                    </body>
-                                    </html>
-                                    """, subtype='html')
-
-                            else:
-                                    msg.add_alternative("""\
-
-                                    <!DOCTYPE html>
-                                    <body>
-                                        <h1> Hello """ + res['emailId'] + """,</h1>
-                                        <p> You haven't updated today's induction plan sheet.update it ASAP!</p>
-                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
-                                    </body>
-                                </html>
-                                """, subtype='html')
-
-                            smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
-
-                            smtp.send_message(msg)
-                        print("Email sent successfully!")
-
-                elif flag == True:
-                    Interns.update_one({"emailId": intern}, {
-                                       "lastUpdate": date.today()})
+        pass
+        
