@@ -34,7 +34,15 @@ def viewPlan():
         data=Plans.find_one({"name":name})
     
     return render_template("viewPlans.html",data=data)
-    
+
+@app.route("/exportPlan",methods=['POST'])
+def exportPlan():
+
+    Interns=db.Interns
+    data=Interns.find_one({"emailId":request.form['email']})
+    data=data['inductionPlan']
+    return render_template("viewPlans.html",data=data)
+
 @app.route("/plans",methods=['POST','GET'])
 def plans():
     if request.method == 'POST':

@@ -77,11 +77,17 @@ Mentor
                         <td style="font-size: 20px;">{{ intern.mobNo }}</td>
                         <td style="font-size: 20px;">
 
+                            <div class="row">
                             <form action="{{ url_for('deleteIntern')}}" method=post>
                                 <input class="d-none" name="email" type="text" value="{{ intern.emailId }}" />
                                 <button type="submit" class="btn btn-danger">Delete</button>
                               </form>
 
+                              <form class="ml-2" action="{{ url_for('exportPlan')}}" method=post>
+                                <input class="d-none" name="email" type="text" value="{{ intern.emailId }}" />
+                                <button type="submit" class="btn btn-success">Export Sheet</button>
+                              </form>
+                            </div>
                         </td>
                     </tr>
 

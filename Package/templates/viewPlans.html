@@ -31,11 +31,10 @@ Plans
                         <th style="font-size: 30px;">Name</th>
                         <th style="font-size: 30px;">PDs</th>
 
-                        {% if session['type'] == 'Interns' %}
                         <th style="font-size: 30px;">Start Date</th>
                         <th style="font-size: 30px;">End Date</th>
                         <th style="font-size: 30px;">Status</th>
-                        {% endif %}
+
 
                     </tr>
                 </thead>
@@ -56,14 +55,14 @@ Plans
 
                         {% if session['type'] == 'Interns' %}
                         <form action="{{ url_for('updateStatus')}}" method=post>
-                        <td style="font-size: 20px;">
-                            <input type="date" id="birthday" name="start" value="{{ i.startDate }}">
-                        </td>
-                        <td style="font-size: 20px;">
-                            <input type="date" id="birthday" name="end" value="{{ i.endDate }}">
-                        </td>
-                        <td style="font-size: 20px;">
-                            
+                            <td style="font-size: 20px;">
+                                <input type="date" id="birthday" name="start" value="{{ i.startDate }}">
+                            </td>
+                            <td style="font-size: 20px;">
+                                <input type="date" id="birthday" name="end" value="{{ i.endDate }}">
+                            </td>
+                            <td style="font-size: 20px;">
+
                                 <input class="d-none" name="submodule" type="text" value="{{ i.name }}" />
                                 <input class="d-none" name="module" type="text" value="{{ d.moduleName  }}" />
                                 <select class="form-select" name="curr" aria-label="Default select example">
@@ -71,21 +70,27 @@ Plans
                                     {% if i.status == "Completed" %}
                                     <option value="Completed" selected>Completed</option>
                                     <option value="In progress">In progress</option>
-                                    <option value="Pending" >Pending</option>
+                                    <option value="Pending">Pending</option>
                                     {% elif i.status == "In progress" %}
-                                    <option value="Completed" >Completed</option>
+                                    <option value="Completed">Completed</option>
                                     <option value="In progress" selected>In progress</option>
-                                    <option value="Pending" >Pending</option>
+                                    <option value="Pending">Pending</option>
                                     {% else %}
                                     <option value="Completed">Completed</option>
-                                    <option value="In progress" >In progress</option>
+                                    <option value="In progress">In progress</option>
                                     <option value="Pending" selected>Pending</option>
                                     {% endif %}
                                 </select>
                                 <button type="submit" class="mt-3 btn btn-warning">Update</button>
-                            
-                        </td>
-                    </form>
+
+                            </td>
+                        </form>
+                        {% else %}
+
+                        <td style="font-size: 20px;">{{ i.startDate }}</td>
+                        <td style="font-size: 20px;">{{ i.endDate }}</td>
+                        <td style="font-size: 20px;">{{ i.status }}</td>
+
                         {% endif %}
 
                     </tr>
