@@ -35,13 +35,20 @@ def viewPlan():
     
     return render_template("viewPlans.html",data=data)
 
-@app.route("/exportPlan",methods=['POST'])
+@app.route("/exportPlan",methods=['GET','POST'])
 def exportPlan():
 
-    Interns=db.Interns
-    data=Interns.find_one({"emailId":request.form['email']})
-    data=data['inductionPlan']
-    return render_template("viewPlans.html",data=data)
+    data={}
+    if session['type'] == 'Interns':
+        Interns=db.Interns
+        data=Interns.find_one({"emailId":session['email']})
+        data=data['inductionPlan']
+    else:
+        Interns=db.Interns
+        data=Interns.find_one({"emailId":request.form['email']})
+        data=data['inductionPlan']
+
+    return render_template("exportPlans.html",data=data)
 
 @app.route("/plans",methods=['POST','GET'])
 def plans():
@@ -51,9 +58,9 @@ def plans():
 
         Plans=db.Plans
         plans=Plans.find_one({"name":name})
-
+        print(file,name)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-        excel_file = "static/profiles/"+file.filename
+        excel_file = "Package/static/profiles/"+file.filename
         file = pd.ExcelFile(excel_file)
         length=len(file.sheet_names)
 
@@ -101,6 +108,7 @@ def plans():
                 res={
                     "moduleName":moduleName,
                     "subModules":subModules,
+                    "RKT":False,
                     "Assignments":Assignments
                 }
                 
@@ -146,6 +154,7 @@ def plans():
                 res={
                     "moduleName":moduleName,
                     "subModules":subModules,
+                    "RKT":False,
                     "Assignments":Assignments
                 }
                 
@@ -188,8 +197,8 @@ def updateStatus():
 
     print(request.form['start'],request.form['end'],request.form['submodule'])
 
-    data=Interns.find_one({"inductionPlan.modules.subModules.name":request.form['submodule']})
-    # print(data)
+    data=Interns.find_one({"emailId":session['email'],"inductionPlan.modules.subModules.name":request.form['submodule']})
+    
 
     # induction=data['inductionPlan']
     for rec in data['inductionPlan']['modules']:
@@ -200,6 +209,8 @@ def updateStatus():
                     d['startDate']=request.form['start']
                     d['endDate']=request.form['end']
 
+    print(data)
+
     Interns.update_one({"emailId":session['email']},{"$set":{"inductionPlan":data['inductionPlan'],"lastUpdate":request.form['end']}})
     # print(data)
-    return redirect(url_for("viewPlan"))
+    return redirect(url_for("exportPlan"))

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Mentor
+{% endblock %}
+{% block body %}
+
+{% if error %}
+<div class=" mt-3 alert alert-warning alert-dismissible fade show" role="alert">
+    <p style="font-size: 20px;">{{error}}</p>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+{% endif %}
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card border-0 shadow rounded-3 my-5">
+                    <div class="card-body p-4 p-sm-5">
+                        <h5 class="card-title text-center text-dark mb-5 ">Submit Feedback</h5>
+                        <form action="{{ url_for('Feedback') }}" method=post>
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="floatingInput" name="email"
+                                    placeholder="Intern's Email Address">
+                                <!-- <label for="floatingInput">Email address</label> -->
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="floatingInput" name="topic"
+                                    placeholder="RKT Topic">
+                                <!-- <label for="floatingInput">Email address</label> -->
+                            </div>
+                            <div class="form-floating mb-3">
+                                <select id="inputState" name="rating" class="form-control">
+                                    <option selected value="Meeting Expectations">Meeting Expectations</option>
+                                    <option value="Below Expectations">Below Expectations</option>
+                                    <option value="Exceed Expectations">Exceed Expectations</option>
+                                </select>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input class="form-control" style="font-size: 20px;" type="date" name="deadline" value="" >
+                            </div>
+                            <div class="form-floating mb-3">
+                                <textarea type="text" class="form-control" id="floatingPassword" name="suggestions"
+                                    placeholder="Suggestions"></textarea>
+                                <!-- <label for="floatingPassword">Password</label> -->
+                            </div>
+
+                            <div class="d-grid">
+                                <button class="btn btn-success btn-login text-uppercase fw-bold" type="submit">Submit</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}

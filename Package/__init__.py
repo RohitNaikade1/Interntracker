@@ -17,7 +17,7 @@ MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
 
 app.config['SECRET_KEY']=os.getenv('SECRET_KEY')
 
-UPLOAD_FOLDER = 'static/profiles'
+UPLOAD_FOLDER = 'Package/static/profiles/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 mail = Mail(app)
@@ -30,4 +30,4 @@ def allowed_file(filename):
 mongodb_client = PyMongo(app, uri="mongodb://localhost:27017/InterTracker")
 db = mongodb_client.db
 
-from Package import adminRoutes,homeRoute,internRoutes,leaveRoutes,managerRoutes,mentorRoutes,planRoutes,profileRoutes
+from Package import adminRoutes,homeRoute,internRoutes,leaveRoutes,managerRoutes,mentorRoutes,planRoutes,profileRoutes,feedbackRoutes
