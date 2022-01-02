@@ -18,28 +18,29 @@ from Package import *
 @app.route("/admin", methods=['POST', 'GET'])
 def adminPage():
 
-    error = ""
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
+    if "email" in session and session['type']=="Admin":
+        error = ""
+        if request.method == 'POST':
+            email = request.form['email']
+            password = request.form['password']
 
-        Manager = db.Managers
-        manager = Manager.find_one({"emailId": email})
-        if manager:
-            error = "Manager already exists"
-        else:
-            salt = bcrypt.gensalt()
-            hashed = bcrypt.hashpw(password.encode('utf8'), salt)
-            Manager.insert_one({"emailId": email, "password": hashed})
+            Manager = db.Managers
+            manager = Manager.find_one({"emailId": email})
+            if manager:
+                error = "Manager already exists"
+            else:
+                salt = bcrypt.gensalt()
+                hashed = bcrypt.hashpw(password.encode('utf8'), salt)
+                Manager.insert_one({"emailId": email, "password": hashed})
 
-            msg = EmailMessage()
+                msg = EmailMessage()
 
-            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+                with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
 
-                msg['Subject'] = 'Your Manager Account is created Successfully on InternTracker'
-                msg['From'] = EMAIL_ADDRESS
-                msg['To'] = email
-                msg.add_alternative("""\
+                    msg['Subject'] = 'Your Manager Account is created Successfully on InternTracker'
+                    msg['From'] = EMAIL_ADDRESS
+                    msg['To'] = email
+                    msg.add_alternative("""\
 
                             <!DOCTYPE html>
                                     <body>
@@ -50,14 +51,16 @@ def adminPage():
                                     </html>
                                     """, subtype='html')
 
-                smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
+                    smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
 
-                smtp.send_message(msg)
-            error = "Manager added Successfully"
+                    smtp.send_message(msg)
+                error = "Manager added Successfully"
+                return render_template('admin.html', error=error)
             return render_template('admin.html', error=error)
-        return render_template('admin.html', error=error)
-    else:
-        Managers = db.Managers
-        manager = Managers.find({})
+        else:
+            Managers = db.Managers
+            manager = Managers.find({})
 
-        return render_template('admin.html', managers=manager)
+            return render_template('admin.html', managers=manager)
+    else:
+        return "<p>You are not authorized entity to access this webpage</p>"

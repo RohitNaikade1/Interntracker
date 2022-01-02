@@ -2,55 +2,60 @@ from Package import *
 
 @app.route("/deleteManager",methods=['POST'])
 def deleteManager():
-    if request.method == 'POST':
-        email=request.form['email']
-        Manager=db.Managers
-        Mentor=db.Mentors
 
-        Mentor.update_many({"manager":email},{"$set":{"manager":None}})
+    if "email" in session and session['type'] == "Admin":
+        if request.method == 'POST':
+            email=request.form['email']
+            Manager=db.Managers
+            Mentor=db.Mentors
 
-        Manager.delete_one({"emailId":email})
+            Mentor.update_many({"manager":email},{"$set":{"manager":None}})
+
+            Manager.delete_one({"emailId":email})
         
-        manager=Manager.find({})
+            manager=Manager.find({})
 
-        return render_template('admin.html',managers=manager)
+            return render_template('admin.html',managers=manager)
+        else:
+            Manager=db.Managers
+            manager=Manager.find({})
+
+            return render_template('admin.html',managers=manager)
     else:
-        Manager=db.Managers
-        manager=Manager.find({})
-
-        return render_template('admin.html',managers=manager)
-
+        return "<p>You are not authorized entity to access this webpage</p>"
 
 @app.route("/manager",methods=['POST','GET'])
 def managerPage():
-    error=""
-    if request.method=='POST':
-        mentor=request.form['mentor']
-        manager=request.form['manager']
-        password=request.form['password']
 
-        mentorDB=db.Mentors
-        managerDB=db.Managers
-        mentorColl=mentorDB.find_one({"emailId":mentor})
-        managerColl=managerDB.find_one({"emailId":manager})
-        if mentorColl:
-            error="Mentor already exists"
-        elif managerColl is None:
-            error="Manager does not exist"
-        else:
-            salt = bcrypt.gensalt()
-            hashed = bcrypt.hashpw(password.encode('utf8'), salt)
-            mentorDB.insert_one({"emailId":mentor,"password":hashed,"manager":manager})
-            managerDB.update_one({"emailId":manager},{'$push':{"mentors":mentor}},upsert=True)
+    if "email" in session and session['type'] == "Managers":
+        error=""
+        if request.method=='POST':
+            mentor=request.form['mentor']
+            manager=request.form['manager']
+            password=request.form['password']
 
-            msg = EmailMessage()
+            mentorDB=db.Mentors
+            managerDB=db.Managers
+            mentorColl=mentorDB.find_one({"emailId":mentor})
+            managerColl=managerDB.find_one({"emailId":manager})
+            if mentorColl:
+                error="Mentor already exists"
+            elif managerColl is None:
+                error="Manager does not exist"
+            else:
+                salt = bcrypt.gensalt()
+                hashed = bcrypt.hashpw(password.encode('utf8'), salt)
+                mentorDB.insert_one({"emailId":mentor,"password":hashed,"manager":manager})
+                managerDB.update_one({"emailId":manager},{'$push':{"mentors":mentor}},upsert=True)
 
-            with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+                msg = EmailMessage()
 
-                msg['Subject'] = 'Your Mentor Account is created Successfully on InternTracker under Manager ' + manager
-                msg['From'] = EMAIL_ADDRESS
-                msg['To'] = mentor
-                msg.add_alternative("""\
+                with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+
+                    msg['Subject'] = 'Your Mentor Account is created Successfully on InternTracker under Manager ' + manager
+                    msg['From'] = EMAIL_ADDRESS
+                    msg['To'] = mentor
+                    msg.add_alternative("""\
 
                             <!DOCTYPE html>
                                     <body>
@@ -61,14 +66,16 @@ def managerPage():
                                     </html>
                                     """, subtype='html')
 
-                smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
+                    smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
 
-                smtp.send_message(msg)
+                    smtp.send_message(msg)
 
-            error="Mentor added Successfully"
+                error="Mentor added Successfully"
+                return render_template('manager.html',error=error)
             return render_template('manager.html',error=error)
-        return render_template('manager.html',error=error)
+        else:
+            Mentors=db.Mentors
+            mentor=Mentors.find({})
+            return render_template('manager.html',mentors=mentor)
     else:
-        Mentors=db.Mentors
-        mentor=Mentors.find({})
-        return render_template('manager.html',mentors=mentor)
+        return "<p>You are not authorized entity to access this webpage</p>"

@@ -78,14 +78,21 @@ Mentor
                         <td style="font-size: 20px;">
 
                             <div class="row">
-                            <form action="{{ url_for('deleteIntern')}}" method=post>
-                                <input class="d-none" name="email" type="text" value="{{ intern.emailId }}" />
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                              </form>
+                            
 
                               <form class="ml-2" action="{{ url_for('exportPlan')}}" method=post>
                                 <input class="d-none" name="email" type="text" value="{{ intern.emailId }}" />
-                                <button type="submit" class="btn btn-success">Export Sheet</button>
+                                <button type="submit" class="btn btn-primary">Export Sheet</button>
+                              </form>
+
+                              <form class="ml-2" action="{{ url_for('renderFeedback')}}" method=post>
+                                <input class="d-none" name="email" type="text" value="{{ intern.emailId }}" />
+                                <button type="submit" class="btn btn-success">Feedback</button>
+                              </form>
+
+                              <form class="ml-2" action="{{ url_for('deleteIntern')}}" method=post>
+                                <input class="d-none" name="email" type="text" value="{{ intern.emailId }}" />
+                                <button type="submit" class="btn btn-danger">Delete</button>
                               </form>
                             </div>
                         </td>
