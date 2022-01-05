@@ -10,8 +10,10 @@ Home
     <div class="d-flex justify-content-center mt-5">
         <h1>Leave Applications.</h1>
     </div>
+
+    {% if data != [] %}
     <div class="row">
-        <table class="table table-striped mt-5">
+        <table class="table table-striped mt-5" border="solid">
             <thead>
 
                 <tr>
@@ -34,21 +36,21 @@ Home
                     <td style="font-size: 20px;">{{ data.reason }}</td>
                     <td style="font-size: 20px;">
                         <div class="row">
-                        <form class="mr-2" action="{{ url_for('leaveActions')}}" method=post>
-                            <input class="d-none" name="name" type="text" value="Approve"/>
-                            <input class="d-none" name="key" type="text" value="{{ data.date }}"/>
-                            <input class="d-none" name="email" type="text" value="{{ data.emailId }}"/>
-                            <button type="submit" class="btn btn-success">Approve</button>
-                        </form>
-                        <form action="{{ url_for('leaveActions')}}" method=post>
-                          <input class="d-none" name="name" type="text" value="Reject"/>
-                          <input class="d-none" name="key" type="text" value="{{ data.date }}"/>
-                          <input class="d-none" name="email" type="text" value="{{ data.emailId }}"/>
-                          <button type="submit" class="btn btn-danger">Reject</button>
-                      </form>
-                     </div>
-                      </td>
-                
+                            <form class="ml-2 mr-2" action="{{ url_for('leaveActions')}}" method=post>
+                                <input class="d-none" name="name" type="text" value="Approve" />
+                                <input class="d-none" name="key" type="text" value="{{ data.date }}" />
+                                <input class="d-none" name="email" type="text" value="{{ data.emailId }}" />
+                                <button type="submit" class="btn btn-success">Approve</button>
+                            </form>
+                            <form action="{{ url_for('leaveActions')}}" method=post>
+                                <input class="d-none" name="name" type="text" value="Reject" />
+                                <input class="d-none" name="key" type="text" value="{{ data.date }}" />
+                                <input class="d-none" name="email" type="text" value="{{ data.emailId }}" />
+                                <button type="submit" class="btn btn-danger">Reject</button>
+                            </form>
+                        </div>
+                    </td>
+
                 </tr>
                 {% endif %}
 
@@ -58,6 +60,12 @@ Home
         </table>
 
     </div>
+    {% else %}
+    <div class="d-flex justify-content-center mt-5">
+        <p style="font-size: 15px;">No Leave applications Registered...</p>
+    </div>
+
+    {% endif %}
 </div>
 {% else %}
 <p>Home Page</p>

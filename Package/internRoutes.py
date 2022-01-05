@@ -6,13 +6,28 @@ def deleteIntern():
     if "email" in session and session['type'] == "Managers" or session['type'] == "Mentors" or session['type'] == "Admin":
         if request.method == 'POST':
             email=request.form['email']
-            Intern=db.Interns
-            Mentors=db.Mentors
-            Mentors.update_one({"emailId":session['email']},{"$pull":{"interns":email}})
-            Intern.delete_one({"emailId":email})
-            intern=Intern.find({})
+            try:
+                Intern=db.Interns
+                Mentors=db.Mentors
+                Mentors.update_one({"emailId":session['email']},{"$pull":{"interns":email}})
+                Intern.delete_one({"emailId":email})
+            
+                intern=Intern.find({})
+                data={
+                        "error":"Intern deleted successfully",
+                        "interns":intern
+                    }
+                return render_template('mentor.html',interns=data)
+                
+            except:
+                Intern=db.Interns
+                intern=Intern.find({})
+                data={
+                        "error":"Error occurred!",
+                        "interns":intern
+                    }
+                return render_template('mentor.html',interns=data)
 
-            return render_template('mentor.html',interns=intern)
         else:
             Intern=db.Interns
             intern=Intern.find({})

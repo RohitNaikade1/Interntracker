@@ -5,9 +5,9 @@ Plans
 {% endblock %}
 {% block body %}
 
-{% if error %}
-<div class=" mt-3 alert alert-warning alert-dismissible fade show" role="alert">
-    <p style="font-size: 20px;">{{error}}</p>
+{% if 'error' in data %}
+<div class=" mt-3 alert alert-success alert-dismissible fade show" role="alert">
+    <p style="font-size: 20px;">{{data.error}}</p>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
@@ -53,7 +53,8 @@ Plans
             <h1>Existing Plans</h1>
         </div>
         <div class="row mt-5">
-            <table class="table table-striped">
+
+            <table class="table table-striped" border="solid">
                 <thead>
 
                     <tr>
@@ -65,21 +66,67 @@ Plans
                 </thead>
                 <tbody>
 
-                    {% for d in data %}
+                    {% for d in data.plans %}
                     <tr>
                         <td style="font-size: 20px;">{{ d.name }}</td>
                         <td style="font-size: 20px;">{{ d.count }}</td>
                         <td style="font-size: 20px;">
-                          <div class="row">
-                          <form class="mr-2" action="{{ url_for('viewPlan')}}" method=post>
-                              <input class="d-none" name="name" type="text" value="{{ d.name }}"/>
-                              <button type="submit" class="btn btn-success">View</button>
-                          </form>
-                          <form action="{{ url_for('deletePlan')}}" method=post>
-                            <input class="d-none" name="name" type="text" value="{{ d.name }}"/>
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                       </div>
+                            <div class="row">
+
+
+                                <button type="submit" class="btn btn-success ml-4" data-toggle="modal"
+                                    data-target="#view{{d.id}}">view</button>
+
+                                <div class="modal fade" id="view{{d.id}}" tabindex="-1" role="dialog"
+                                    aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Want to view a Plan? </h5>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form class="ml-3 mr-2" action="{{ url_for('viewPlan')}}" method=post>
+                                                    <input class="d-none" name="name" type="text"
+                                                        value="{{ d.name }}" />
+                                                    <button type="submit" class="btn btn-primary">Yes</button>
+                                                </form>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <button type="submit" class="btn btn-danger ml-2" data-toggle="modal"
+                                    data-target="#delete{{d.id}}">Delete</button>
+
+                                <div class="modal fade" id="delete{{d.id}}" tabindex="-1" role="dialog"
+                                    aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Want to delete a plan? </h5>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form action="{{ url_for('deletePlan')}}" method=post>
+                                                    <input class="d-none" name="name" type="text"
+                                                        value="{{ d.name }}" />
+                                                    <button type="submit" class="btn btn-primary">Yes</button>
+                                                </form>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
                         </td>
                     </tr>
 

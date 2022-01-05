@@ -24,23 +24,24 @@ def adminPage():
             email = request.form['email']
             password = request.form['password']
 
-            Manager = db.Managers
-            manager = Manager.find_one({"emailId": email})
-            if manager:
-                error = "Manager already exists"
-            else:
-                salt = bcrypt.gensalt()
-                hashed = bcrypt.hashpw(password.encode('utf8'), salt)
-                Manager.insert_one({"emailId": email, "password": hashed})
+            try:
+                Manager = db.Managers
+                manager = Manager.find_one({"emailId": email})
+                if manager:
+                    error = "Manager already exists"
+                else:
+                    salt = bcrypt.gensalt()
+                    hashed = bcrypt.hashpw(password.encode('utf8'), salt)
+                    Manager.insert_one({"emailId": email, "password": hashed})
 
-                msg = EmailMessage()
+                    msg = EmailMessage()
 
-                with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+                    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
 
-                    msg['Subject'] = 'Your Manager Account is created Successfully on InternTracker'
-                    msg['From'] = EMAIL_ADDRESS
-                    msg['To'] = email
-                    msg.add_alternative("""\
+                        msg['Subject'] = 'Your Manager Account is created Successfully on InternTracker'
+                        msg['From'] = EMAIL_ADDRESS
+                        msg['To'] = email
+                        msg.add_alternative("""\
 
                             <!DOCTYPE html>
                                     <body>
@@ -51,16 +52,30 @@ def adminPage():
                                     </html>
                                     """, subtype='html')
 
-                    smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
+                        smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
 
-                    smtp.send_message(msg)
-                error = "Manager added Successfully"
-                return render_template('admin.html', error=error)
-            return render_template('admin.html', error=error)
+                        smtp.send_message(msg)
+                    error = "Manager added Successfully"
+                    manager = Manager.find({})
+                    data={
+                        "error":error,
+                        "managers":manager
+                    }
+                    return render_template('admin.html', managers=data)
+                
+            except:
+                manager = Manager.find({})
+                data={
+                    "error":"Error occurred!",
+                    "managers":manager
+                }
+                return render_template('admin.html', managers=data)
         else:
             Managers = db.Managers
             manager = Managers.find({})
-
-            return render_template('admin.html', managers=manager)
+            data={
+                    "managers":manager
+                }
+            return render_template('admin.html', managers=data)
     else:
         return "<p>You are not authorized entity to access this webpage</p>"

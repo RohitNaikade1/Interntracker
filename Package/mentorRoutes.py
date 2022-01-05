@@ -1,34 +1,53 @@
 import datetime
 from Package import *
 
-@app.route("/deleteMentor",methods=['POST'])
+@app.route("/deleteMentor",methods=['GET','POST'])
 def deleteMentor():
-
-    if "email" in session and session['type']=="Managers":
+    error=""
+    if "email" in session and session['type']=="Managers" or session['type']=="Admin":
         if request.method == 'POST':
             email=request.form['email']
-            Mentor=db.Mentors
-            Managers=db.Managers
-            Interns=db.Interns
 
-            Interns.update_many({"mentor":email},{"$set":{"mentor":None}})
-            Managers.update_one({"emailId":session['email']},{"$pull":{"mentors":email}})
-            Mentor.delete_one({"emailId":email})
-            mentor=Mentor.find({})
+            try:
+                Mentor=db.Mentors
+                Managers=db.Managers
+                Interns=db.Interns
+                Interns.update_many({"mentor":email},{"$set":{"mentor":None}})
+                Managers.update_one({"emailId":session['email']},{"$pull":{"mentors":email}})
+                Mentor.delete_one({"emailId":email})
+            
+                mentor=Mentor.find({})
+                data={
+                    "error":"Mentor deleted successfully",
+                    "mentors":mentor
+                    }
 
-            return render_template('manager.html',mentors=mentor)
+                return render_template('manager.html',mentors=data)
+            except:
+                mentor=Mentor.find({})
+                data={
+                    "error":"error occurred!",
+                    "mentors":mentor
+                    }
+
+
+                return render_template('manager.html',mentors=data)
         else:
             Mentor=db.Mentors
             mentor=Mentor.find({})
+            data={
+                    "mentors":mentor
+                }
 
-            return render_template('manager.html',mentors=mentor)
+
+            return render_template('manager.html',mentors=data)
     else:
         return "<p>You are not authorized entity to access this webpage</p>"
         
 @app.route("/mentor",methods=['POST','GET'])
 def mentorPage():
 
-    if "email" in session and session['type']=="Managers":
+    if "email" in session and session['type']=="Mentors" or session['type']=="Managers" or session['type']=="Admin":
         error=""
         if request.method=='POST':
             intern=request.form['intern']
@@ -79,12 +98,29 @@ def mentorPage():
 
                     smtp.send_message(msg)
                 error="Intern added Successfully"
-                return render_template('mentor.html',error=error)
-            return render_template('mentor.html',error=error)
+                Interns=db.Interns
+                intern=Interns.find({})
+                data={
+                    "error":error,
+                    "interns":intern
+                }
+               
+                return render_template('mentor.html',interns=data)
+            Interns=db.Interns
+            intern=Interns.find({})
+            data={
+                    "error":error,
+                    "interns":intern
+                }
+            return render_template('mentor.html',interns=data)
         else:
 
             Interns=db.Interns
             intern=Interns.find({})
-            return render_template('mentor.html',interns=intern)
+            data={
+                    "interns":intern
+                }
+            print(data)
+            return render_template('mentor.html',interns=data)
     else:
         return "<p>You are not authorized entity to access this webpage</p>"
