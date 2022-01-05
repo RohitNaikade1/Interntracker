@@ -9,7 +9,8 @@ def deleteIntern():
             try:
                 Intern=db.Interns
                 Mentors=db.Mentors
-                Mentors.update_one({"emailId":session['email']},{"$pull":{"interns":email}})
+                internData=Intern.find_one({"emailId":email})
+                Mentors.update_one({"emailId":internData['mentor']},{"$pull":{"interns":email}})
                 Intern.delete_one({"emailId":email})
             
                 intern=Intern.find({})

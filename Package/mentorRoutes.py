@@ -12,10 +12,13 @@ def deleteMentor():
                 Mentor=db.Mentors
                 Managers=db.Managers
                 Interns=db.Interns
+
+                mentorData=Mentor.find_one({"emailId":email})
                 Interns.update_many({"mentor":email},{"$set":{"mentor":None}})
-                Managers.update_one({"emailId":session['email']},{"$pull":{"mentors":email}})
+                Managers.update_one({"emailId":mentorData['manager']},{"$pull":{"mentors":email}})
+                
                 Mentor.delete_one({"emailId":email})
-            
+                print(session['email'])
                 mentor=Mentor.find({})
                 data={
                     "error":"Mentor deleted successfully",
@@ -30,7 +33,6 @@ def deleteMentor():
                     "mentors":mentor
                     }
 
-
                 return render_template('manager.html',mentors=data)
         else:
             Mentor=db.Mentors
@@ -38,7 +40,6 @@ def deleteMentor():
             data={
                     "mentors":mentor
                 }
-
 
             return render_template('manager.html',mentors=data)
     else:
