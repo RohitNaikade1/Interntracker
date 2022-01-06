@@ -5,11 +5,9 @@ import os
 def exportfile(email):
 
     dir_list = os.listdir("Package/static/Sheets/")
-    print(os.getenv('host'))
 
     for file in dir_list:
         if email+".xlsx" == file:
-            print("yes")
             return
     workbook = xlsxwriter.Workbook('Package/static/Sheets/'+email+'.xlsx')
     worksheet = workbook.add_worksheet("Plan")

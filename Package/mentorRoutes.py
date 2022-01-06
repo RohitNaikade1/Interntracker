@@ -18,7 +18,7 @@ def deleteMentor():
                 Managers.update_one({"emailId":mentorData['manager']},{"$pull":{"mentors":email}})
                 
                 Mentor.delete_one({"emailId":email})
-                print(session['email'])
+              
                 mentor=Mentor.find({})
                 data={
                     "error":"Mentor deleted successfully",
@@ -121,7 +121,7 @@ def mentorPage():
             data={
                     "interns":intern
                 }
-            print(data)
+            
             return render_template('mentor.html',interns=data)
     else:
         return "<p>You are not authorized entity to access this webpage</p>"

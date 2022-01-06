@@ -19,7 +19,6 @@ for intern in data:
             date1 = datetime.strptime(first, "%Y-%m-%d")
             date2 = datetime.strptime(modules['deadline'], "%Y-%m-%d")
 
-            print(date1,date2)
             if date1 == date2:
 
                 for sub in modules['subModules']:
@@ -41,7 +40,6 @@ for intern in data:
         if flag == False:
             continue
         else:
-            print(modules['moduleName'], intern['emailId'])
             to = [intern['emailId']]
             msg = EmailMessage()
 
@@ -79,4 +77,3 @@ for intern in data:
                 smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
 
                 smtp.send_message(msg)
-                print("Email sent successfully!")

@@ -6,6 +6,3 @@ client=MongoClient("mongodb+srv://GSLab:"+urllib.parse.quote("gslab@123")+"@clus
 db=client.get_database("InterTracker")
 intern=db.Interns
 
-
-
-print(list(intern.find({})))

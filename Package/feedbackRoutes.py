@@ -22,7 +22,7 @@ def Feedback():
                 for module in data['inductionPlan']['modules']:
                     if module['moduleName'] == request.form['topic']:
                         module['deadline'] = request.form['deadline']
-                        print(module)
+                        
                 Interns.update_one({"emailId": request.form['email']}, {
                                "$set": {"inductionPlan": data['inductionPlan']}})
 
@@ -65,7 +65,6 @@ def Feedback():
                     smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
 
                     smtp.send_message(msg)
-                    print("Email sent successfully!")
 
             else:
 
@@ -127,7 +126,7 @@ def Feedback():
                     smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
 
                     smtp.send_message(msg)
-                    print("Email sent successfully!")
+                    
                     return render_template("feedback.html")
         else:
             return render_template("feedback.html")

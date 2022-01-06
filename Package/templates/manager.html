@@ -44,17 +44,17 @@ Manager
                         <form action="{{ url_for('managerPage') }}" method=post>
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control" id="floatingInput" name="mentor"
-                                    placeholder="Mentor's Email Address">
+                                    placeholder="Mentor's Email Address" required>
                                 <!-- <label for="floatingInput">Email address</label> -->
                             </div>
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control" id="floatingInput" name="manager"
-                                    placeholder="Manager's Email Address">
+                                    placeholder="Manager's Email Address" required>
                                 <!-- <label for="floatingInput">Email address</label> -->
                             </div>
                             <div class="form-floating mb-3">
                                 <input type="password" class="form-control" id="floatingPassword" name="password"
-                                    placeholder="Password">
+                                    placeholder="Password" required>
                                 <!-- <label for="floatingPassword">Password</label> -->
                             </div>
 

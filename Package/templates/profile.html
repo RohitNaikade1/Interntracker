@@ -44,7 +44,7 @@ Profile
 
                                 <form action="{{ url_for('profilepic') }}" method=post enctype="multipart/form-data">
                                         <div class="mt-2 text-center"><input type="file" name="file"
-                                                        class="form-control" placeholder="">
+                                                        class="form-control" placeholder="" required>
                                         </div>
                                         <div class="mt-2 text-center"><button class="btn btn-primary profile-button"
                                                         type="submit">Update
@@ -64,24 +64,24 @@ Profile
                                                         <div class="col-md-6"><label class="labels">First
                                                                         Name</label><input type="text" name="fname"
                                                                         class="form-control" placeholder=""
-                                                                        value="{{ data.fname }}"></div>
+                                                                        value="{{ data.fname }}" required></div>
                                                         {% else %}
                                                         <div class="col-md-6"><label class="labels">First
                                                                         Name</label><input type="text" name="fname"
                                                                         class="form-control" placeholder="First Name"
-                                                                        value=""></div>
+                                                                        value="" required></div>
                                                         {% endif %}
 
                                                         {% if data.sname %}
                                                         <div class="col-md-6"><label
                                                                         class="labels">Surname</label><input type="text"
                                                                         name="sname" class="form-control"
-                                                                        value="{{ data.sname }}" placeholder=""></div>
+                                                                        value="{{ data.sname }}" placeholder="" required></div>
                                                         {% else %}
                                                         <div class="col-md-6"><label
                                                                         class="labels">Surname</label><input type="text"
                                                                         name="sname" class="form-control"
-                                                                        placeholder="Surname" value=""></div>
+                                                                        placeholder="Surname" value="" required></div>
                                                         {% endif %}
 
 
@@ -92,24 +92,24 @@ Profile
                                                         <div class="col-md-12"><label class="labels">Email
                                                                         ID</label><input type="text" name="email"
                                                                         class="form-control" placeholder=""
-                                                                        value="{{ data.emailId }}"></div>
+                                                                        value="{{ data.emailId }}" required></div>
                                                         {% else %}
                                                         <div class="col-md-12"><label class="labels">Email
                                                                         ID</label><input type="text" name="email"
                                                                         class="form-control"
-                                                                        placeholder="enter email id" value=""></div>
+                                                                        placeholder="enter email id" value="" required></div>
                                                         {% endif %}
 
                                                         {% if data.mobNo %}
                                                         <div class="col-md-12"><label class="labels">Mobile
                                                                         Number</label><input type="text" name="mobNo"
                                                                         class="form-control" placeholder=""
-                                                                        value="{{ data.mobNo }}"></div>
+                                                                        value="{{ data.mobNo }}" required></div>
                                                         {% else %}
                                                         <div class="col-md-12"><label class="labels">Mobile
                                                                         Number</label><input type="text" name="mobNo"
                                                                         class="form-control"
-                                                                        placeholder="enter phone number" value=""></div>
+                                                                        placeholder="enter phone number" value="" required></div>
                                                         {% endif %}
 
                                                         {% if data.address %}
@@ -117,12 +117,12 @@ Profile
                                                                         class="labels">Address</label><textarea
                                                                         type="text" name="address" class="form-control"
                                                                         placeholder="{{ data.address }}"
-                                                                        value=""></textarea></div>
+                                                                        value="" required></textarea></div>
                                                         {% else %}
                                                         <div class="col-md-12"><label
                                                                         class="labels">Address</label><textarea
                                                                         type="text" name="address" class="form-control"
-                                                                        placeholder="Enter Address" value=""></textarea>
+                                                                        placeholder="Enter Address" value="" required></textarea>
                                                         </div>
                                                         {% endif %}
 
@@ -131,32 +131,34 @@ Profile
                                                                         class="labels">Education</label><input
                                                                         type="text" name="education"
                                                                         class="form-control" placeholder="education"
-                                                                        value="{{ data.education }}"></div>
+                                                                        value="{{ data.education }}" required></div>
                                                         {% else %}
                                                         <div class="col-md-12"><label
                                                                         class="labels">Education</label><input
                                                                         type="text" name="education"
                                                                         class="form-control" placeholder="education"
-                                                                        value=""></div>
+                                                                        value="" required></div>
                                                         {% endif %}
 
                                                         {% if data.city %}
                                                         <div class="col-md-12"><label class="labels">City</label><input
                                                                         type="text" class="form-control" name="city"
-                                                                        placeholder="City" value="{{ data.city }}">
+                                                                        placeholder="City" value="{{ data.city }}" required>
                                                         </div>
                                                         {% else %}
                                                         <div class="col-md-12"><label class="labels">City</label><input
                                                                         type="text" class="form-control" name="city"
-                                                                        placeholder="City" value=""></div>
+                                                                        placeholder="City" value="" required></div>
                                                         {% endif %}
 
-                                                        {% if session['type'] == 'Managers' or session['type'] == 'Mentors' %}
+                                                        {% if session['type'] == 'Managers' or session['type'] ==
+                                                        'Mentors' %}
 
-                                                        {% if data.notifications and data.notifications == "Once in a week" %}
+                                                        {% if data.notifications and data.notifications == "Once in a
+                                                        week" %}
                                                         <div class="col-md-12"><label class="labels">Notification
                                                                         Type</label><select id="inputState" name="type"
-                                                                        class="form-control">
+                                                                        class="form-control" required>
                                                                         <option selected>Once in a week</option>
                                                                         <option>Once in a two weeks</option>
                                                                 </select>
@@ -167,7 +169,7 @@ Profile
 
                                                         <div class="col-md-12"><label class="labels">Notification
                                                                         Type</label><select id="inputState" name="type"
-                                                                        class="form-control">
+                                                                        class="form-control" required>
                                                                         <option>Once in a week</option>
                                                                         <option selected>Once in a two weeks</option>
                                                                 </select>
@@ -184,12 +186,12 @@ Profile
                                                                         class="labels">Country</label><input type="text"
                                                                         name="country" class="form-control"
                                                                         placeholder="country"
-                                                                        value="{{ data.country }}"></div>
+                                                                        value="{{ data.country }}" required></div>
                                                         {% else %}
                                                         <div class="col-md-6"><label
                                                                         class="labels">Country</label><input type="text"
                                                                         name="country" class="form-control"
-                                                                        placeholder="country" value=""></div>
+                                                                        placeholder="country" value="" required></div>
                                                         {% endif %}
 
 
@@ -197,13 +199,13 @@ Profile
                                                         <div class="col-md-6"><label
                                                                         class="labels">State/Region</label><input
                                                                         type="text" name="state" class="form-control"
-                                                                        value="{{ data.state }}" placeholder="state">
+                                                                        value="{{ data.state }}" placeholder="state" required>
                                                         </div>
                                                         {% else %}
                                                         <div class="col-md-6"><label
                                                                         class="labels">State/Region</label><input
                                                                         type="text" name="state" class="form-control"
-                                                                        value="" placeholder="state"></div>
+                                                                        value="" placeholder="state" required></div>
                                                         {% endif %}
 
                                                 </div>

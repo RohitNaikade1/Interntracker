@@ -143,7 +143,7 @@ def Login():
             else:
                 salt = bcrypt.gensalt()
                 hashed = bcrypt.hashpw(password.encode('utf8'), salt)
-                print("reached")
+               
                 if bcrypt.checkpw(hashed, user['password']):
                     error = "Invalid Username/Password"
                 else:

@@ -36,18 +36,54 @@ Home
                     <td style="font-size: 20px;">{{ data.reason }}</td>
                     <td style="font-size: 20px;">
                         <div class="row">
-                            <form class="ml-2 mr-2" action="{{ url_for('leaveActions')}}" method=post>
-                                <input class="d-none" name="name" type="text" value="Approve" />
-                                <input class="d-none" name="key" type="text" value="{{ data.date }}" />
-                                <input class="d-none" name="email" type="text" value="{{ data.emailId }}" />
-                                <button type="submit" class="btn btn-success">Approve</button>
-                            </form>
-                            <form action="{{ url_for('leaveActions')}}" method=post>
-                                <input class="d-none" name="name" type="text" value="Reject" />
-                                <input class="d-none" name="key" type="text" value="{{ data.date }}" />
-                                <input class="d-none" name="email" type="text" value="{{ data.emailId }}" />
-                                <button type="submit" class="btn btn-danger">Reject</button>
-                            </form>
+
+                            <button type="submit" class="btn btn-primary ml-2" data-toggle="modal"
+                                    data-target="#approve{{data._id}}">Approve</button>
+
+                                <div class="modal fade" id="approve{{data._id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Want to approve a leave? </h5>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form class="ml-2 mr-2" action="{{ url_for('leaveActions')}}" method=post>
+                                                    <input class="d-none" name="name" type="text" value="Approve" />
+                                                    <input class="d-none" name="key" type="text" value="{{ data.date }}" />
+                                                    <input class="d-none" name="email" type="text" value="{{ data.emailId }}" />
+                                                    <button type="submit" class="btn btn-primary">Yes</button>
+                                                </form>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            <button type="submit" class="btn btn-danger ml-2" data-toggle="modal"
+                                    data-target="#reject{{data._id}}">Reject</button>
+
+                                <div class="modal fade" id="reject{{data._id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Want to reject a leave? </h5>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form action="{{ url_for('leaveActions')}}" method=post>
+                                                    <input class="d-none" name="name" type="text" value="Reject" />
+                                                    <input class="d-none" name="key" type="text" value="{{ data.date }}" />
+                                                    <input class="d-none" name="email" type="text" value="{{ data.emailId }}" />
+                                                    <button type="submit" class="btn btn-primary">Yes</button>
+                                                </form>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                         </div>
                     </td>
 

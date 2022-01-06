@@ -55,14 +55,13 @@ def profilepic():
             if file and allowed_file(file.filename):
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-                now = datetime.now()
+                now = datetime.datetime.now()
                 date_time = now.strftime("%m_%d_%Y, %H:%M:%S")
             
                 old_name = r"static/profiles/"+filename
                 new_name = r"static/profiles/"+date_time+filename
 
                 os.rename(old_name,new_name)
-                print(date_time+filename)
 
                 collection=db.get_collection(session['type'])
                 user=collection.find_one({"emailId":session['email']})

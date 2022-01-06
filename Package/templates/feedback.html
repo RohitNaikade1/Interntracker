@@ -24,27 +24,27 @@ Mentor
                         <form action="{{ url_for('Feedback') }}" method=post>
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control" id="floatingInput" name="email" value="{{data}}"
-                                    placeholder="Intern's Email Address">
+                                    placeholder="Intern's Email Address" required>
                                 <!-- <label for="floatingInput">Email address</label> -->
                             </div>
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" id="floatingInput" name="topic"
-                                    placeholder="RKT Topic">
+                                    placeholder="RKT Topic" required>
                                 <!-- <label for="floatingInput">Email address</label> -->
                             </div>
                             <div class="form-floating mb-3">
-                                <select id="inputState" name="rating" class="form-control">
+                                <select id="inputState" name="rating" class="form-control" required>
                                     <option selected value="Meeting Expectations">Meeting Expectations</option>
                                     <option value="Below Expectations">Below Expectations</option>
                                     <option value="Exceed Expectations">Exceed Expectations</option>
                                 </select>
                             </div>
                             <div class="form-floating mb-3">
-                                <input class="form-control" style="font-size: 20px;" type="date" name="deadline" value="" >
+                                <input class="form-control" style="font-size: 20px;" type="date" name="deadline" value=""  required>
                             </div>
                             <div class="form-floating mb-3">
                                 <textarea type="text" class="form-control" id="floatingPassword" name="suggestions"
-                                    placeholder="Suggestions"></textarea>
+                                    placeholder="Suggestions" required></textarea>
                                 <!-- <label for="floatingPassword">Password</label> -->
                             </div>
 

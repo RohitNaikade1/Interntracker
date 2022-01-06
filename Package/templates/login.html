@@ -24,11 +24,11 @@ Login
                         <form action="{{ url_for('Login') }}" method=post>
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control" id="floatingInput" name="email"
-                                    placeholder="Email Address">
+                                    placeholder="Email Address" required>
                                 <!-- <label for="floatingInput">Email address</label> -->
                             </div>
                             <div class="form-floating mb-3">
-                                <select id="inputState" name="type" class="form-control">
+                                <select id="inputState" name="type" class="form-control" required>
                                     <option selected>Admin</option>
                                     <option>Interns</option>
                                     <option>Managers</option>
@@ -38,7 +38,7 @@ Login
                             </div>
                             <div class="form-floating mb-3">
                                 <input type="password" class="form-control" id="floatingPassword" name="password"
-                                    placeholder="Password">
+                                    placeholder="Password" required>
                                 <!-- <label for="floatingPassword">Password</label> -->
                             </div>
 

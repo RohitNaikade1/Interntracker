@@ -262,9 +262,6 @@ def updateStatus():
     if "email" in session:
         Interns = db.Interns
 
-        print(request.form['start'], request.form['end'],
-              request.form['submodule'])
-
         data = Interns.find_one(
             {"emailId": session['email'], "inductionPlan.modules.subModules.name": request.form['submodule']})
 
@@ -277,11 +274,10 @@ def updateStatus():
                         d['startDate'] = request.form['start']
                         d['endDate'] = request.form['end']
 
-        print(data)
 
         Interns.update_one({"emailId": session['email']}, {"$set": {
                            "inductionPlan": data['inductionPlan'], "lastUpdate": request.form['end']}})
-        # print(data)
+
         return redirect(url_for("exportPlan"))
     else:
         return "<p>You are not authorized entity to access this webpage</p>"

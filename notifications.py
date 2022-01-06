@@ -9,7 +9,7 @@ def numOfDays(date1, date2):
 day = datetime.today().strftime('%A')
 
 if day == "Saturday" or day == "Sunday":
-    print("Enjoy weekend")
+    pass
 else:
     Mentors = db.Mentors
     data = Mentors.find({})
@@ -121,11 +121,11 @@ else:
                             smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
 
                             smtp.send_message(msg)
-                        print("Email sent successfully!")
+                        
 
                     else:
 
-                        print("Intern")
+                       
                         msg = EmailMessage()
 
                         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
@@ -162,10 +162,10 @@ else:
                             smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
 
                             smtp.send_message(msg)
-                        print("Email sent successfully!")
+                       
 
                 elif res['lastUpdate'] == "":
-                        print("Intern")
+                        
                         msg = EmailMessage()
 
                         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
@@ -206,6 +206,6 @@ else:
                 elif flag == True:
 
                        
-                        print("Email sent successfully!")
+                        
                         Interns.update_one({"emailId": intern}, {
                                        "lastUpdate": date.today()})
