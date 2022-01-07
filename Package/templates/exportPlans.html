@@ -69,15 +69,9 @@ Plans
 
                                     {% if i.status == "Completed" %}
                                     <option value="Completed" selected>Completed</option>
-                                    <option value="In progress">In progress</option>
-                                    <option value="Pending">Pending</option>
-                                    {% elif i.status == "In progress" %}
-                                    <option value="Completed">Completed</option>
-                                    <option value="In progress" selected>In progress</option>
                                     <option value="Pending">Pending</option>
                                     {% else %}
                                     <option value="Completed">Completed</option>
-                                    <option value="In progress">In progress</option>
                                     <option value="Pending" selected>Pending</option>
                                     {% endif %}
                                 </select>

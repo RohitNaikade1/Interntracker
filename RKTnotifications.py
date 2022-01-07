@@ -4,7 +4,7 @@ from datetime import timedelta as td
 from datetime import datetime
 
 Interns = db.Interns
-
+print(str(date.today()))
 data = Interns.find({})
 
 for intern in data:

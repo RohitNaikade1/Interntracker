@@ -13,15 +13,23 @@ def renderFeedback():
 @app.route("/feedback", methods=['GET', 'POST'])
 def Feedback():
     if "email" in session and session['type'] == "Mentors":
+        error=""
         if request.method == 'POST':
 
             Interns = db.Interns
             data = Interns.find_one({"emailId": request.form['email']})
 
             if request.form['rating'] == 'Below Expectations':
+
+                if request.form['deadline'] == "":
+                    error="please select deadline!"
+                    return render_template("feedback.html",error=error)
+
                 for module in data['inductionPlan']['modules']:
                     if module['moduleName'] == request.form['topic']:
                         module['deadline'] = request.form['deadline']
+                        module['RKT'] = False
+                        module['rating'] = request.form['rating']
                         
                 Interns.update_one({"emailId": request.form['email']}, {
                                "$set": {"inductionPlan": data['inductionPlan']}})
@@ -65,6 +73,9 @@ def Feedback():
                     smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
 
                     smtp.send_message(msg)
+
+                    error="Feedback submitted successfully!"
+                    return render_template("feedback.html",error=error)
 
             else:
 
@@ -111,7 +122,7 @@ def Feedback():
                         <!DOCTYPE html>
                             <body>
                                 <h1> Hello """ + data['emailId'] + """,</h1>
-                                <p> You haven satisfactorily performed during an RKT on topic <b>""" + request.form['topic'] + """</b>.your mentor have submitted a measure """ + request.form['rating'] + """.you can continue with your next topic.</p>
+                                <p> You haven satisfactorily performed during an RKT on topic <b>""" + request.form['topic'] + """</b>.your mentor have submitted a measure <b>""" + request.form['rating'] + """</b>.you can continue with your next topic.</p>
                                 <p>Mentor's Suggestions:</p>
 
                                 <blockquote>
@@ -126,8 +137,8 @@ def Feedback():
                     smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
 
                     smtp.send_message(msg)
-                    
-                    return render_template("feedback.html")
+                    error="Feedback submitted successfully!"
+                    return render_template("feedback.html",error=error)
         else:
             return render_template("feedback.html")
 

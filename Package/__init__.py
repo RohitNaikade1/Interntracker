@@ -14,7 +14,7 @@ load_dotenv()
 
 EMAIL_ADDRESS = os.getenv('MAIL_USERNAME')
 MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
-
+Host = os.getenv('host')
 app.config['SECRET_KEY']=os.getenv('SECRET_KEY')
 
 UPLOAD_FOLDER = 'Package/static/profiles/'

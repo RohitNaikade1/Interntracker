@@ -30,6 +30,26 @@ def Home():
                         rec.update({'emailId': intern['emailId']})
                         data.append(rec)
             return render_template('home.html', data=data)
+        elif session['type'] == 'Interns':
+            data=db.Interns.find_one({"emailId":session['email']})
+            array=[]
+
+            for data in data['inductionPlan']['modules']:
+                temp={
+                    "name":"",
+                    "rating":""
+                }
+                if data['RKT'] == True:
+                    temp['name']=data['moduleName']
+                    temp['rating']=data['rating']
+                elif data['RKT'] == False and 'rating' in data and data['rating'] == "Below Expectations":
+                    temp['name']=data['moduleName']
+                    temp['rating']=data['rating']
+                else:
+                    temp['name']=data['moduleName']
+                    temp['rating']="RKT to happen yet"
+                array.append(temp)
+            return render_template('home.html', data=array)
         else:
             return render_template('home.html')
     else:
@@ -73,7 +93,7 @@ def sendMail(data, type):
                                     <body>
                                         <h1> Hello """ + data['fname'] + """ """ + data['sname'] + """,</h1>
                                         <p> click on the below link to reset your password.link will expire in next 30 minutes.</p>
-                                        <p> """ + url_for('resetToken', token=token, _external=True) + """</p>
+                                        <a href=""" + url_for('resetToken', token=token, _external=True) + """> <p>Click here to reset you password!</p></a><br><br>
                                         <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
                                     </body>
                                     </html>
@@ -85,6 +105,7 @@ def sendMail(data, type):
                                     <body>
                                         <h1> Hello """ + data['emailId'] + """,</h1>
                                         <p> click on the below link to reset your password.link will expire in next 30 minutes.</p>
+                                        <a href=""" + url_for('resetToken', token=token, _external=True) + """> <p>Click here to reset you password!</p></a><br><br>
                                         <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
                                     </body>
                                     </html>
@@ -106,11 +127,30 @@ def resetPassword():
         if request.method == 'POST':
 
             email = request.form['email']
-            type = request.form['type']
+            data = None
+            type=""
 
-            DB = db.get_collection(type)
+            internData=db.Interns.find_one({"emailId":email})
+            mentorData=db.Mentors.find_one({"emailId":email})
+            managerData=db.Managers.find_one({"emailId":email})
+            AdminData=db.Admin.find_one({"emailId":email})
 
-            data = DB.find_one({"emailId": email})
+
+            if internData is not None:
+                data=internData
+                type="Interns"
+            elif mentorData is not None:
+                data=mentorData
+                type="Mentors"
+            elif managerData is not None:
+                data=managerData
+                type="Managers"
+            elif AdminData is not None:
+                data=AdminData
+                type="Admin"
+            else:
+                data=None
+
 
             if data is None:
                 error = "User doesn't exists in database."
@@ -132,11 +172,32 @@ def Login():
         if request.method == 'POST':
 
             email = request.form['email']
-            type = request.form['type']
+            # type = request.form['type']
             password = request.form['password']
 
-            cursor = db.get_collection(type)
-            user = cursor.find_one({"emailId": email})
+            user = None
+            type=""
+            internData=db.Interns.find_one({"emailId":email})
+            mentorData=db.Mentors.find_one({"emailId":email})
+            managerData=db.Managers.find_one({"emailId":email})
+            AdminData=db.Admin.find_one({"emailId":email})
+
+
+            if internData is not None:
+                user=internData
+                type="Interns"
+            elif mentorData is not None:
+                user=mentorData
+                type="Mentors"
+            elif managerData is not None:
+                user=managerData
+                type="Managers"
+            elif AdminData is not None:
+                user=AdminData
+                type="Admin"
+            else:
+                user=None
+            
 
             if user is None:
                 error = "No user exists!"
@@ -148,7 +209,7 @@ def Login():
                     error = "Invalid Username/Password"
                 else:
                     session['email'] = request.form['email']
-                    session['type'] = request.form['type']
+                    session['type'] = type
                     return redirect(url_for("Home"))
 
         return render_template("login.html", error=error)

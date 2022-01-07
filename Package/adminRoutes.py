@@ -47,7 +47,7 @@ def adminPage():
                                     <body>
                                         <h1> Hello """ + email + """,</h1>
                                         <p> Your Email address is """ + email + """ And Password is """ + password + """</p>
-                                        <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
+                                        <img style="margin-top:50px;" src="static/images/greets.jpg"></img>
                                     </body>
                                     </html>
                                     """, subtype='html')

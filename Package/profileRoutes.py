@@ -58,8 +58,8 @@ def profilepic():
                 now = datetime.datetime.now()
                 date_time = now.strftime("%m_%d_%Y, %H:%M:%S")
             
-                old_name = r"static/profiles/"+filename
-                new_name = r"static/profiles/"+date_time+filename
+                old_name = r"Package/static/profiles/"+filename
+                new_name = r"Package/static/profiles/"+date_time+filename
 
                 os.rename(old_name,new_name)
 
