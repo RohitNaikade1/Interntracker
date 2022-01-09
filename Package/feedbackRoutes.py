@@ -29,7 +29,15 @@ def Feedback():
                     if module['moduleName'] == request.form['topic']:
                         module['deadline'] = request.form['deadline']
                         module['RKT'] = False
+                        module['noOfRKTs'] = module['noOfRKTs'] + 1
                         module['rating'] = request.form['rating']
+                        record={
+                            "srNo":module['noOfRKTs'],
+                            "rating":module['rating'],
+                            "suggestions":request.form['suggestions']
+                        }
+                        module['RKTHistory'].append(record)
+                        modules['suggestions'] = request.form['suggestions']
                         
                 Interns.update_one({"emailId": request.form['email']}, {
                                "$set": {"inductionPlan": data['inductionPlan']}})
@@ -83,7 +91,15 @@ def Feedback():
                     if module['moduleName'] == request.form['topic']:
                         module['deadline'] = ""
                         module['RKT'] = True
+                        module['noOfRKTs'] = module['noOfRKTs'] + 1
                         module['rating'] = request.form['rating']
+                        record={
+                            "srNo":module['noOfRKTs'],
+                            "rating":module['rating'],
+                            "suggestions":request.form['suggestions']
+                        }
+                        module['RKTHistory'].append(record)
+                        modules['suggestions'] = request.form['suggestions']
 
                 Interns.update_one({"emailId": request.form['email']}, {
                                "$set": {"inductionPlan": data['inductionPlan']}})

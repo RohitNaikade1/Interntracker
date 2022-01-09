@@ -30,6 +30,7 @@ def Home():
                         rec.update({'emailId': intern['emailId']})
                         data.append(rec)
             return render_template('home.html', data=data)
+
         elif session['type'] == 'Interns':
             data=db.Interns.find_one({"emailId":session['email']})
             array=[]
@@ -37,17 +38,26 @@ def Home():
             for data in data['inductionPlan']['modules']:
                 temp={
                     "name":"",
-                    "rating":""
+                    "rating":"",
+                    "rkts":0,
+                    "suggestions":""
                 }
                 if data['RKT'] == True:
                     temp['name']=data['moduleName']
                     temp['rating']=data['rating']
+                    temp['rkts']=data['noOfRKTs']
+                    temp['suggestions']=data['suggestions']
+
                 elif data['RKT'] == False and 'rating' in data and data['rating'] == "Below Expectations":
                     temp['name']=data['moduleName']
                     temp['rating']=data['rating']
+                    temp['rkts']=data['noOfRKTs']
+                    temp['suggestions']=data['suggestions']
                 else:
                     temp['name']=data['moduleName']
                     temp['rating']="RKT to happen yet"
+                    temp['rkts']=0
+                    temp['suggestions']="No comments"
                 array.append(temp)
             return render_template('home.html', data=array)
         else:

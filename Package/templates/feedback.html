@@ -23,8 +23,8 @@ Mentor
                         <h5 class="card-title text-center text-dark mb-5 ">Submit Feedback</h5>
                         <form action="{{ url_for('Feedback') }}" method=post>
                             <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="floatingInput" name="email" value="{{data}}"
-                                    placeholder="Intern's Email Address" required>
+                                <input type="email" class="form-control" id="floatingInput" name="email"
+                                    value="{{data}}" placeholder="Intern's Email Address" required>
                                 <!-- <label for="floatingInput">Email address</label> -->
                             </div>
                             <div class="form-floating mb-3">
@@ -33,14 +33,15 @@ Mentor
                                 <!-- <label for="floatingInput">Email address</label> -->
                             </div>
                             <div class="form-floating mb-3">
-                                <select id="inputState" name="rating" class="form-control" required>
+                                <select id="inputState" name="rating" class="form-control" required onChange="change(this.value)">
                                     <option selected value="Meeting Expectations">Meeting Expectations</option>
                                     <option value="Below Expectations">Below Expectations</option>
                                     <option value="Exceed Expectations">Exceed Expectations</option>
                                 </select>
                             </div>
                             <div class="form-floating mb-3">
-                                <input class="form-control" style="font-size: 20px;" type="date" name="deadline" value="">
+                                <input class="d-none form-control" style="font-size: 20px;" type="date" id="date" name="deadline"
+                                    value="">
                             </div>
                             <div class="form-floating mb-3">
                                 <textarea type="text" class="form-control" id="floatingPassword" name="suggestions"
@@ -49,7 +50,8 @@ Mentor
                             </div>
 
                             <div class="d-grid">
-                                <button class="btn btn-success btn-login text-uppercase fw-bold" type="submit">Submit</button>
+                                <button class="btn btn-success btn-login text-uppercase fw-bold"
+                                    type="submit">Submit</button>
                             </div>
 
                         </form>
@@ -59,4 +61,16 @@ Mentor
         </div>
     </div>
 </body>
+
+<script>
+    function change(value) {
+
+        if(value == "Below Expectations" ){
+            document.getElementById("date").classList.remove('d-none');
+        }else{
+            document.getElementById("date").classList.remove('d-none');
+        }
+   
+    }
+</script>
 {% endblock %}

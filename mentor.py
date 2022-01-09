@@ -9,6 +9,8 @@ from send_mail import send_mail
 from getPD import get_gdp_data
 
 print(str(date.today()))
+
+
 def exportfile(email):
 
     # dir_list = os.listdir("Package/static/Sheets/")
@@ -84,63 +86,89 @@ Mentors = db.Mentors
 data = Mentors.find({})
 
 for mentor in data:
-    first = str(date.today())
-    date1 = datetime.strptime(first,"%Y-%m-%d")
-    date2 = datetime.strptime(mentor['nextDate'], "%Y-%m-%d")
-    
-    if date1 ==date2:
 
-        Interns = db.Interns
-        intern = Interns.find({"mentor": mentor['emailId']})
+    if 'nextDate' in mentor:
+        first = str(date.today())
+        date1 = datetime.strptime(first, "%Y-%m-%d")
+        date2 = datetime.strptime(mentor['nextDate'], "%Y-%m-%d")
 
-        modules = []
-        name = []
-        email = []
-        percentage = []
-        files = []
+        if date1 == date2:
 
-        for d in intern:
-            modules.append(d['inductionPlan']['name'])
-            exportfile(d['emailId'])
-            files.append(os.getenv('host')+'static/Sheets/' +
-                         d['emailId']+'.xlsx')
+            Interns = db.Interns
+            intern = Interns.find({"mentor": mentor['emailId']})
 
-            if 'fname' in d and 'sname' in d:
-                name.append(d['fname']+" "+d['sname'])
-                email.append(d['emailId'])
+            modules = []
+            name = []
+            email = []
+            percentage = []
+            files = []
+
+            for d in intern:
+                modules.append(d['inductionPlan']['name'])
+                exportfile(d['emailId'])
+                files.append(os.getenv('host')+'static/Sheets/' +
+                             d['emailId']+'.xlsx')
+
+                if 'fname' in d and 'sname' in d:
+                    name.append(d['fname']+" "+d['sname'])
+                    email.append(d['emailId'])
+                else:
+                    name.append("Not updated")
+                    email.append(d['emailId'])
+
+                temp = []
+                for module in d['inductionPlan']['modules']:
+                    completed = 0
+                    for mdl in module['subModules']:
+                        if mdl['status'] == 'Completed':
+                            completed = completed+1
+
+                    temp.append(
+                        (completed/len(module['subModules']))*100)
+
+                percentage.append(
+                    str(int(sum(temp)/len(d['inductionPlan']['modules'])))+"%")
+            data = get_gdp_data(modules, percentage, name, email, files)
+            output = build_table(data, 'blue_light')
+            subject = "Induction stats!"
+            receiver = [mentor['emailId']]
+            send_mail(output, subject, receiver)
+
+            if mentor['notifications'] == "Once in a week":
+                today = date.today()
+                Mentors.update_one({"emailId": mentor['emailId']}, {"$set": {"nextDate": str(
+                    today + td(days=-today.weekday(), weeks=1))}})
             else:
-                name.append("Not updated")
-                email.append(d['emailId'])
+                today = date.today()
+                Mentors.update_one({"emailId": mentor['emailId']}, {"$set": {"nextDate": str(
+                    today + td(days=-today.weekday(), weeks=2))}})
 
-            temp = []
-            for module in d['inductionPlan']['modules']:
-                completed = 0
-                for mdl in module['subModules']:
-                    if mdl['status'] == 'Completed':
-                        completed = completed+1
-
-                temp.append(
-                    (completed/len(module['subModules']))*100)
-
-            percentage.append(
-                str(int(sum(temp)/len(d['inductionPlan']['modules'])))+"%")
-        data = get_gdp_data(modules, percentage, name, email,files)
-        output = build_table(data, 'blue_light')
-        subject = "Induction stats!"
-        receiver = [mentor['emailId']]
-        send_mail(output, subject, receiver)
-        
-
-        if mentor['notifications'] == "Once in a week":
-            today = date.today()
-            Mentors.update_one({"emailId": mentor['emailId']}, {"$set": {"nextDate": str(
-                today + td(days=-today.weekday(), weeks=1))}})
+            pass
         else:
-            today = date.today()
-            Mentors.update_one({"emailId": mentor['emailId']}, {"$set": {"nextDate": str(
-                today + td(days=-today.weekday(), weeks=2))}})
 
-        pass
+            pass
     else:
+        to = [mentor['emailId']]
+        msg = EmailMessage()
 
-        pass
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+
+            msg['Subject'] = 'Update your profile to get induction updates!'
+            msg['From'] = EMAIL_ADDRESS
+            msg['To'] = ','.join(to)
+            msg.set_content("Schedule an RKT!")
+
+            msg.add_alternative("""\
+
+                    <!DOCTYPE html>
+                        <body>
+                            <h1> Hello """ + mentor['emailId'] + """,</h1>
+                                <p> You haven't updated your profile details yet.update profile details to get induction updates/completion status of interns. </p>
+                                <img style="margin-top:50px;" src="https://i.pinimg.com/600x315/43/e2/e7/43e2e73f1c55e01ebf043b8e264c9424.jpg"></img>
+                        </body>
+                     </html>
+                        """, subtype='html')
+
+            smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
+
+            smtp.send_message(msg)

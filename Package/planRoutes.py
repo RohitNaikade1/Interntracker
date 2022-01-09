@@ -138,6 +138,8 @@ def plans():
                             "moduleName": moduleName,
                             "subModules": subModules,
                             "RKT": False,
+                            "noOfRKTs":0,
+                            "RKTHistory":[],
                             "Assignments": Assignments
                         }
 
@@ -186,6 +188,8 @@ def plans():
                             "moduleName": moduleName,
                             "subModules": subModules,
                             "RKT": False,
+                            "noOfRKTs":0,
+                            "RKTHistory":[],
                             "Assignments": Assignments
                         }
 

@@ -105,7 +105,7 @@ Home
 
 <div class="container">
     <div class="d-flex justify-content-center mt-5">
-        <h1>Module wise Mentor's Feedback.</h1>
+        <h1>Topic wise Mentor's Feedback.</h1>
     </div>
 
     <div class="row">
@@ -113,8 +113,10 @@ Home
             <thead>
 
                 <tr>
-                    <th style="font-size: 30px;">Module Name</th>
+                    <th style="font-size: 30px;">Topic Name</th>
                     <th style="font-size: 30px;">Rating</th>
+                    <th style="font-size: 30px;">No. of RKTs</th>
+                    <th style="font-size: 30px;">Comment</th>
                 </tr>
             </thead>
             <tbody>
@@ -124,7 +126,7 @@ Home
                 <tr>
 
                     <td style="font-size: 20px;">{{ data.name }}</td>
-
+                    
                     {% if data.rating == "RKT to happen yet" %}
                     <td style="font-size: 20px;">{{ data.rating }}</td>
                     {% elif data.rating == "Meeting Expectations" %}
@@ -134,7 +136,8 @@ Home
                     {% elif data.rating == "Below Expectations" %}
                     <td style="font-size: 22px;color: red;"><i class="fas fa-star"></i>   <i class="fas fa-star">   </i>   <i class="far fa-star"></i>   <i class="far fa-star"></i>   <i class="far fa-star"></i></td>
                     {% endif %}
-
+                    <td style="font-size: 20px;">{{ data.rkts }}</td>
+                    <td style="font-size: 20px;">{{ data.suggestions }}</td>
                 </tr>
 
                 {% endfor %}
