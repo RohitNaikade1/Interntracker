@@ -126,16 +126,16 @@ Mentor
                                 {% endif %}
 
                                 <button type="submit" class="btn btn-secondary ml-2" data-toggle="modal"
-                                    data-target="#delete{{intern._id}}">Report</button>
+                                    data-target="#report{{intern._id}}">Report</button>
 
-                                <div class="modal fade" id="delete{{intern._id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="report{{intern._id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title">Want to open a report? </h5>
                                             </div>
                                             <div class="modal-footer">
-                                                <form action="{{ url_for('deleteIntern')}}" method=post>
+                                                <form action="{{ url_for('Report')}}" method=post>
                                                     <input class="d-none" name="email" type="text"
                                                         value="{{ intern.emailId }}" />
                                                     <button type="submit" class="btn btn-primary">Yes</button>

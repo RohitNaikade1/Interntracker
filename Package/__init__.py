@@ -30,4 +30,4 @@ def allowed_file(filename):
 mongodb_client = PyMongo(app, uri="mongodb://localhost:27017/InterTracker")
 db = mongodb_client.db
 
-from Package import adminRoutes,homeRoute,internRoutes,leaveRoutes,managerRoutes,mentorRoutes,planRoutes,profileRoutes,feedbackRoutes
+from Package import adminRoutes,homeRoute,internRoutes,leaveRoutes,managerRoutes,mentorRoutes,planRoutes,profileRoutes,feedbackRoutes,reportRoutes

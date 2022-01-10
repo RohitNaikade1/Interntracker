@@ -31,13 +31,14 @@ def Feedback():
                         module['RKT'] = False
                         module['noOfRKTs'] = module['noOfRKTs'] + 1
                         module['rating'] = request.form['rating']
+                        module['suggestions'] = request.form['suggestions']
                         record={
                             "srNo":module['noOfRKTs'],
                             "rating":module['rating'],
                             "suggestions":request.form['suggestions']
                         }
                         module['RKTHistory'].append(record)
-                        modules['suggestions'] = request.form['suggestions']
+                        
                         
                 Interns.update_one({"emailId": request.form['email']}, {
                                "$set": {"inductionPlan": data['inductionPlan']}})
@@ -99,7 +100,7 @@ def Feedback():
                             "suggestions":request.form['suggestions']
                         }
                         module['RKTHistory'].append(record)
-                        modules['suggestions'] = request.form['suggestions']
+                        module['suggestions'] = request.form['suggestions']
 
                 Interns.update_one({"emailId": request.form['email']}, {
                                "$set": {"inductionPlan": data['inductionPlan']}})
