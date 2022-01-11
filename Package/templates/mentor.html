@@ -20,7 +20,7 @@ Mentor
             <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
                 <div class="card border-0 shadow rounded-3 my-5">
                     <div class="card-body p-4 p-sm-5">
-                        <h5 class="card-title text-center text-dark mb-5 fs-5">Mentor DashBoard</h5>
+                        <h5 class="card-title text-center text-dark mb-5 fs-5" style="font-family: 'Times New Roman', Times, serif;">Mentor DashBoard</h5>
                         <form action="{{ url_for('mentorPage') }}" method=post>
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control" id="floatingInput" name="intern"
@@ -87,7 +87,7 @@ Mentor
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Want to export a sheet?</h5>
+                                                <h5 class="modal-title">Want to export a sheet of {{ intern.emailId }} ?</h5>
                                             </div>
                                             <div class="modal-footer">
                                                 <form class="ml-2" action="{{ url_for('exportPlan')}}" method=post>
@@ -100,6 +100,28 @@ Mentor
                                         </div>
                                     </div>
                                 </div>
+                                
+                                {% if 'planLink' in intern %}
+                                <button type="submit" class="btn btn-warning ml-2" data-toggle="modal"
+                                    data-target="#download{{intern._id}}">Download sheet</button>
+
+                                <div class="modal" id="download{{intern._id}}" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Want to download a sheet of {{ intern.emailId }} ?</h5>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <form class="ml-2" action="{{ intern.planLink }}">
+                                                    <button type="submit" class="btn btn-primary">Yes</button>
+                                                </form>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
                                 {% if session['type'] == "Mentors" %}
 
                                 <button type="submit" class="btn btn-success ml-2" data-toggle="modal"
@@ -109,7 +131,7 @@ Mentor
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Want to submit a feedback? </h5>
+                                                <h5 class="modal-title">Want to submit a feedback for {{ intern.emailId }} ? </h5>
                                             </div>
                                             <div class="modal-footer">
                                                 <form class="ml-2" action="{{ url_for('renderFeedback')}}" method=post>
@@ -132,7 +154,7 @@ Mentor
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Want to open a report? </h5>
+                                                <h5 class="modal-title">Want to open a report of {{ intern.emailId }} ? </h5>
                                             </div>
                                             <div class="modal-footer">
                                                 <form action="{{ url_for('Report')}}" method=post>
@@ -154,7 +176,7 @@ Mentor
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Want to delete a record? </h5>
+                                                <h5 class="modal-title">Want to delete a record of {{ intern.emailId }} ? </h5>
                                             </div>
                                             <div class="modal-footer">
                                                 <form action="{{ url_for('deleteIntern')}}" method=post>

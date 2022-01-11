@@ -32,6 +32,7 @@ def Report():
                     temp['name'] = data['moduleName']
                     temp['rating'] = data['rating']
                     temp['rkts'] = data['noOfRKTs']
+                    temp['status'] = "In Progress"
                     temp['History'] = data['RKTHistory']
                     temp['suggestions'] = data['suggestions']
                     temp['id']=cnt+1
@@ -40,6 +41,7 @@ def Report():
                     temp['name'] = data['moduleName']
                     temp['rating'] = "RKT to happen yet"
                     temp['rkts'] = 0
+                    temp['status'] = "To Do"
                     temp['History'] = data['RKTHistory']
                     temp['suggestions'] = "No comments"
                     temp['id']=cnt+1

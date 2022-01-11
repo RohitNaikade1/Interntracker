@@ -25,7 +25,7 @@ def exportfile(email):
 
     data = Intern.find_one({"emailId": email})
 
-    heads = ['ModuleName', 'Assignments', 'subModule',
+    heads = ['ModuleName', 'subModule',
              'PD', 'Status', 'startDate', 'endDate']
     rows = []
     rows.append(heads)
@@ -33,12 +33,6 @@ def exportfile(email):
         flag = True
         row = [modules['moduleName']]
 
-        ass = ""
-
-        for d in modules['Assignments']:
-            ass = ass+" "+d
-
-        row.append(ass)
         for dt in modules['subModules']:
             if flag == True:
                 row.append(dt['name'])
@@ -48,7 +42,6 @@ def exportfile(email):
                 row.append(dt['endDate'])
                 flag = False
             else:
-                row.append("")
                 row.append("")
                 row.append(dt['name'])
                 row.append(dt['PD'])
@@ -61,20 +54,20 @@ def exportfile(email):
     rowd = 0
     cold = 0
 
-    for ModuleName, Assignments, subModule, PD, Status, startDate, endDate in (rows):
+    for ModuleName,subModule, PD, Status, startDate, endDate in (rows):
         worksheet.write(rowd, cold, ModuleName)
-        worksheet.write(rowd, cold + 1, Assignments)
-        worksheet.write(rowd, cold+2, subModule)
+        # worksheet.write(rowd, cold + 1, Assignments)
+        worksheet.write(rowd, cold+1, subModule)
         if isinstance(PD, float) and PD >= 0.0 and PD <= 100.0:
-            worksheet.write(rowd, cold + 3, PD)
+            worksheet.write(rowd, cold + 2, PD)
         elif isinstance(PD, str):
-            worksheet.write(rowd, cold + 3, 'PD')
+            worksheet.write(rowd, cold + 2, 'PD')
         else:
-            worksheet.write(rowd, cold + 3, 0)
+            worksheet.write(rowd, cold + 2, 0)
 
-        worksheet.write(rowd, cold+4, Status)
-        worksheet.write(rowd, cold + 5, startDate)
-        worksheet.write(rowd, cold + 6, endDate)
+        worksheet.write(rowd, cold+3, Status)
+        worksheet.write(rowd, cold + 4, startDate)
+        worksheet.write(rowd, cold + 5, endDate)
         rowd += 1
 
     workbook.close()
@@ -105,10 +98,12 @@ for manager in data:
 
                 for d in intern:
                     managerModules.append(d['inductionPlan']['name'])
-
+                    
                     exportfile(d['emailId'])
                     managerFiles.append(os.getenv('host') +
                                     'static/Sheets/' + d['emailId']+'.xlsx')
+                    url=os.getenv('host') +'static/Sheets/' + d['emailId']+'.xlsx'
+                    Interns.update_one({"emailId":d['emailId']},{"$set":{"planLink":url}})
                     if 'fname' in d and 'sname' in d:
                         managerName.append(d['fname']+" "+d['sname'])
                         managerEmail.append(d['emailId'])

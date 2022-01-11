@@ -36,6 +36,18 @@ def leaves():
                 return render_template("leaves.html",data=data['leaves'])
             else:
                 return render_template("leaves.html",data=[])
+
+    elif "email" in session and session['type'] == "Mentors":
+        Interns = db.Interns
+        data = []
+        interns = Interns.find({"mentor": session['email']})
+
+        for intern in interns:
+            if "leaves" in intern:
+                for rec in intern["leaves"]:
+                    rec.update({'emailId': intern['emailId']})
+                    data.append(rec)
+        return render_template('leaves.html', data=data)
     else:
         return "<p>You are not authorized entity to access this webpage</p>"
 

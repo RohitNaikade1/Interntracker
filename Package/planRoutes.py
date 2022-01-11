@@ -113,10 +113,6 @@ def plans():
                             if isinstance(i, float):
                                 PDs.append(i)
 
-                        for i in sheet['Assignments']:
-                            if isinstance(i, str):
-                                Assignments.append(i)
-
                         for i in sheet['sub module']:
                             if isinstance(i, str):
                                 subModule.append(i)
@@ -139,8 +135,7 @@ def plans():
                             "subModules": subModules,
                             "RKT": False,
                             "noOfRKTs":0,
-                            "RKTHistory":[],
-                            "Assignments": Assignments
+                            "RKTHistory":[]
                         }
 
                         Plans.find_one_and_update(
@@ -163,10 +158,6 @@ def plans():
                             if isinstance(i, float):
                                 PDs.append(i)
 
-                        for i in sheet['Assignments']:
-                            if isinstance(i, str):
-                                Assignments.append(i)
-
                         for i in sheet['sub module']:
                             if isinstance(i, str):
                                 subModule.append(i)
@@ -189,8 +180,7 @@ def plans():
                             "subModules": subModules,
                             "RKT": False,
                             "noOfRKTs":0,
-                            "RKTHistory":[],
-                            "Assignments": Assignments
+                            "RKTHistory":[]
                         }
 
                         Plans.find_one_and_update(

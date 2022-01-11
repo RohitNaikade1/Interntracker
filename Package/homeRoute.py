@@ -20,16 +20,8 @@ def Home():
 
     if "email" in session:
         if session['type'] == "Mentors":
-            Interns = db.Interns
-            data = []
-            interns = Interns.find({"mentor": session['email']})
-
-            for intern in interns:
-                if "leaves" in intern:
-                    for rec in intern["leaves"]:
-                        rec.update({'emailId': intern['emailId']})
-                        data.append(rec)
-            return render_template('home.html', data=data)
+            return redirect(url_for('mentorPage'))
+            
 
         elif session['type'] == 'Interns':
             data=db.Interns.find_one({"emailId":session['email']})
@@ -60,6 +52,10 @@ def Home():
                     temp['suggestions']="No comments"
                 array.append(temp)
             return render_template('home.html', data=array)
+        elif  session['type'] == "Managers":
+            return redirect(url_for('managerPage'))
+        elif  session['type'] == "Admin":
+            return redirect(url_for('adminPage'))
         else:
             return render_template('home.html')
     else:

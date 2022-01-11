@@ -37,9 +37,6 @@
             <ul class="navbar-nav">
 
                 {% if session['type'] == 'Admin' %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{url_for('adminPage')}}">Admin Section</a>
-                </li>
                 <li class="nav-item ">
                     <a class="nav-link" href="{{ url_for('managerPage')}}">Manager Section</a>
                 </li>
@@ -50,9 +47,6 @@
                     <a class="nav-link" href="{{ url_for('profile')}}">Profile</a>
                 </li>
                 {% elif session['type'] == 'Managers' %}
-                <li class="nav-item ">
-                    <a class="nav-link" href="{{ url_for('managerPage')}}">Manager Section</a>
-                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('mentorPage')}}">Mentor Section</a>
                 </li>
@@ -64,7 +58,7 @@
                 </li>
                 {% elif session['type'] == 'Mentors' %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('mentorPage')}}">Mentor Section</a>
+                    <a class="nav-link" href="{{ url_for('leaves')}}">Leaves</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('profile')}}">Profile</a>
@@ -76,7 +70,7 @@
                 
                 {% elif session['type'] == 'Interns' %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('exportPlan')}}">Intern Section</a>
+                    <a class="nav-link" href="{{ url_for('exportPlan')}}">Plan</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('profile')}}">Profile</a>

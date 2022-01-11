@@ -23,7 +23,7 @@ Plans
             <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
                 <div class="card border-0 shadow rounded-3 my-5">
                     <div class="card-body p-4 p-sm-5">
-                        <h5 class="card-title text-center text-dark mb-5 fs-5">Add/Update Plan</h5>
+                        <h5 class="card-title text-center text-dark mb-5 fs-5" style="font-family: 'Times New Roman', Times, serif;">Add/Update Plan</h5>
                         <form action="{{ url_for('plans') }}" method=post enctype="multipart/form-data">
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" id="floatingInput" name="planName"
@@ -82,7 +82,7 @@ Plans
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Want to view a Plan? </h5>
+                                                <h5 class="modal-title">Want to view a Plan {{ d.name }} ? </h5>
                                             </div>
                                             <div class="modal-footer">
                                                 <form class="ml-3 mr-2" action="{{ url_for('viewPlan')}}" method=post>
@@ -109,7 +109,7 @@ Plans
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Want to delete a plan? </h5>
+                                                <h5 class="modal-title">Want to delete a plan {{ d.name }} ? </h5>
                                             </div>
                                             <div class="modal-footer">
                                                 <form action="{{ url_for('deletePlan')}}" method=post>

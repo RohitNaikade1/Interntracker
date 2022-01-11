@@ -16,7 +16,7 @@
       <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
         <div class="card border-0 shadow rounded-3 my-5">
           <div class="card-body p-4 p-sm-5">
-            <h5 class="card-title text-center text-dark mb-5 fs-5">Admin DashBoard</h5>
+            <h5 class="card-title text-center text-dark mb-5 fs-5" style="font-family: 'Times New Roman', Times, serif;">Admin DashBoard</h5>
             <form action="{{ url_for('adminPage') }}" method=post>
               <div class="form-floating mb-3">
                 <input type="email" class="form-control" id="floatingInput" name="email"
@@ -71,7 +71,7 @@
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title">Want to delete a record? </h5>
+                      <h5 class="modal-title">Want to delete a record of {{ manager.emailId }} ? </h5>
                     </div>
                     <div class="modal-footer">
                       <form action="{{ url_for('deleteManager')}}" method=post>

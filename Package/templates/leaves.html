@@ -14,13 +14,15 @@ Leaves
 </div>
 {% endif %}
 
+{% if session['type'] == "Interns" %}
+
 <body>
     <div class="container">
         <div class="row">
             <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
                 <div class="card border-0 shadow rounded-3 my-5">
                     <div class="card-body p-4 p-sm-5">
-                        <h5 class="card-title text-center text-dark mb-5 fs-5">Leaves Management</h5>
+                        <h5 class="card-title text-center text-dark mb-5 fs-5" style="font-family: 'Times New Roman', Times, serif;">Leaves Management</h5>
                         <form action="{{ url_for('leaves') }}" method=post>
                             <div class="form-floating mb-3">
                                 <input type="date" class="form-control" id="floatingInput" name="date" required>
@@ -36,9 +38,10 @@ Leaves
                                     placeholder="Reason" required></textarea>
                                 <!-- <label for="floatingInput">Email address</label> -->
                             </div>
-                
+
                             <div class="d-grid">
-                                <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Add Record</button>
+                                <button class="btn btn-primary btn-login text-uppercase fw-bold" type="submit">Add
+                                    Record</button>
                             </div>
 
                         </form>
@@ -62,7 +65,7 @@ Leaves
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                     {% for data in data %}
                     <tr>
                         <td style="font-size: 20px;">{{ data.date }}</td>
@@ -83,4 +86,101 @@ Leaves
         </div>
     </div>
 </body>
+{% else %}
+<div class="container">
+    <div class="d-flex justify-content-center mt-5">
+        <h1 style="font-family: 'Times New Roman', Times, serif;">Leave Applications.</h1>
+    </div>
+
+    <div class="row">
+        <table class="table table-striped mt-5" border="solid">
+            <thead>
+
+                <tr>
+                    <th style="font-size: 30px;">Intern's EmailId</th>
+                    <th style="font-size: 30px;">Date</th>
+                    <th style="font-size: 30px;">Leave Type</th>
+                    <th style="font-size: 30px;">Reason</th>
+                    <th style="font-size: 30px;">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for data in data %}
+
+                {% if data.visible %}
+                <tr>
+                    <td style="font-size: 20px;">{{ data.emailId }}</td>
+                    <td style="font-size: 20px;">{{ data.date }}</td>
+                    <td style="font-size: 20px;">{{ data.type }}</td>
+                    <td style="font-size: 20px;">{{ data.reason }}</td>
+                    <td style="font-size: 20px;">
+                        <div class="row">
+
+                            <button type="submit" class="btn btn-primary ml-2" data-toggle="modal"
+                                data-target="#approve{{data._id}}">Approve</button>
+
+                            <div class="modal fade" id="approve{{data._id}}" tabindex="-1" role="dialog"
+                                aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Want to approve a leave for {{ data.emailId }} ? </h5>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form class="ml-2 mr-2" action="{{ url_for('leaveActions')}}" method=post>
+                                                <input class="d-none" name="name" type="text" value="Approve" />
+                                                <input class="d-none" name="key" type="text" value="{{ data.date }}" />
+                                                <input class="d-none" name="email" type="text"
+                                                    value="{{ data.emailId }}" />
+                                                <button type="submit" class="btn btn-primary">Yes</button>
+                                            </form>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <button type="submit" class="btn btn-danger ml-2" data-toggle="modal"
+                                data-target="#reject{{data._id}}">Reject</button>
+
+                            <div class="modal fade" id="reject{{data._id}}" tabindex="-1" role="dialog"
+                                aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Want to reject a leave of {{ data.emailId }} ? </h5>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form action="{{ url_for('leaveActions')}}" method=post>
+                                                <input class="d-none" name="name" type="text" value="Reject" />
+                                                <input class="d-none" name="key" type="text" value="{{ data.date }}" />
+                                                <input class="d-none" name="email" type="text"
+                                                    value="{{ data.emailId }}" />
+                                                <button type="submit" class="btn btn-primary">Yes</button>
+                                            </form>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </td>
+
+                </tr>
+                {% endif %}
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+{% endif %}
 {% endblock %}

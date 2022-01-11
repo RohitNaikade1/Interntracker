@@ -19,16 +19,15 @@ Plans
     <div class="container col-md-12 ml-0">
 
         <div class="mt-5">
-            <h1 class="d-flex justify-content-center">{{ data.name }}</h1>
+            <h1 class="d-flex justify-content-center" style="font-family: 'Times New Roman', Times, serif;">{{ data.name }}</h1>
         </div>
         <div class="ml-0 row mt-5">
-            <table class="table table-striped">
+            <table class="table table-striped" border="solid">
                 <thead>
 
                     <tr>
                         <th style="font-size: 30px;">Module Name</th>
-                        <th style="font-size: 30px;">Assignments</th>
-                        <th style="font-size: 30px;">Name</th>
+                        <th style="font-size: 30px;">Sub Topic</th>
                         <th style="font-size: 30px;">PDs</th>
 
                         <th style="font-size: 30px;">Start Date</th>
@@ -44,10 +43,8 @@ Plans
                     <tr>
                         <td style="font-size: 20px;">{{ d.moduleName }}</td>
 
-                        <td style="font-size: 20px;">{{ d.Assignments }}</td>
                         {% for i in d.subModules %}
                     <tr>
-                        <td style="font-size: 20px;"></td>
                         <td style="font-size: 20px;"></td>
                         <td style="font-size: 20px;">{{ i.name }}</td>
                         <td style="font-size: 20px;">{{ i.PD }}</td>

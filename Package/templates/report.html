@@ -25,12 +25,16 @@ Report
 
                 <tr>
 
-                    {% if data.status == "Incomplete" %}
-                    <td style="font-size: 20px;">{{ data.name }}<span class="ml-2 badge badge-danger">Incomplete</span>
+                    {% if data.status == "In Progress" %}
+                    <td style="font-size: 20px;">{{ data.name }}<span class="ml-2 badge badge-secondary">In Progress</span><span class="ml-2 badge badge-success">{{
+                        data.rkts }}</span>
+                    </td>
+                    {% elif data.status == "To Do" %}
+                    <td style="font-size: 20px;">{{ data.name }}<span class="ml-2 badge badge-danger">To Do</span>
                     </td>
                     {% else %}
                     <td style="font-size: 20px;">{{ data.name }} <span
-                            class="ml-2 badge badge-primary">Completed</span><span class="ml-2 badge badge-primary">{{
+                            class="ml-2 badge badge-primary">Completed</span><span class="ml-2 badge badge-success">{{
                             data.rkts }}</span>
                     </td>
                     {% endif %}
