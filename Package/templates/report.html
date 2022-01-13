@@ -8,7 +8,16 @@ Report
     <div class="d-flex justify-content-center mt-5">
         <h1 class="" style="font-family: 'Times New Roman', Times, serif;">Induction Report.</h1>
     </div>
+    <div>
+        {% if data.info.fname != "" and data.info.sname != "" %}
+        <p style="font-size: 20px;" class="mt-5">Name: {{ data.info.fname }} {{ data.info.sname }}</p>
+        <p style="font-size: 20px;">emailId: {{ data.info.emailId }}</p>
+        {% else %}
+        <p style="font-size: 20px;">Name: profile details not updated.</p>
+        <p style="font-size: 20px;">emailId: {{ data.info.emailId }}</p>
+        {% endif %}
 
+    </div>
     <div class="row">
         <table class="table table-striped mt-5" border="solid">
             <thead>
@@ -21,13 +30,14 @@ Report
             </thead>
             <tbody>
 
-                {% for data in data %}
+                {% for data in data.array %}
 
                 <tr>
 
                     {% if data.status == "In Progress" %}
-                    <td style="font-size: 20px;">{{ data.name }}<span class="ml-2 badge badge-secondary">In Progress</span><span class="ml-2 badge badge-success">{{
-                        data.rkts }}</span>
+                    <td style="font-size: 20px;">{{ data.name }}<span class="ml-2 badge badge-secondary">In
+                            Progress</span><span class="ml-2 badge badge-success">{{
+                            data.rkts }}</span>
                     </td>
                     {% elif data.status == "To Do" %}
                     <td style="font-size: 20px;">{{ data.name }}<span class="ml-2 badge badge-danger">To Do</span>
@@ -84,10 +94,9 @@ Report
                                                     {% if data.rating == "RKT to happen yet" %}
                                                     <td style="font-size: 20px;">{{ data.rating }}</td>
                                                     {% elif data.rating == "Meeting Expectations" %}
-                                                    <td style="font-size: 22px;color: blue;"><i
-                                                            class="fas fa-star"></i> <i class="fas fa-star"></i> <i
-                                                            class="fas fa-star"></i> <i class="far fa-star"></i> <i
-                                                            class="far fa-star"></i> </td>
+                                                    <td style="font-size: 22px;color: blue;"><i class="fas fa-star"></i>
+                                                        <i class="fas fa-star"></i> <i class="fas fa-star"></i> <i
+                                                            class="far fa-star"></i> <i class="far fa-star"></i> </td>
                                                     {% elif data.rating == "Exceed Expectations" %}
                                                     <td style="font-size: 22px;color: green;"><i
                                                             class="fas fa-star"></i> <i class="fas fa-star"></i>
@@ -97,7 +106,8 @@ Report
                                                     {% elif data.rating == "Below Expectations" %}
                                                     <td style="font-size: 22px;color: red;"><i class="fas fa-star"></i>
                                                         <i class="fas fa-star"> </i> <i class="far fa-star"></i> <i
-                                                            class="far fa-star"></i> <i class="far fa-star"></i> </td>
+                                                            class="far fa-star"></i> <i class="far fa-star"></i>
+                                                    </td>
                                                     {% endif %}
                                                     <td style="font-size: 20px;">{{ data.suggestions }}</td>
                                                 </tr>

@@ -2,6 +2,7 @@ from flask import *
 from dotenv import load_dotenv
 import bcrypt
 from flask_mail import Mail,Message
+from datetime import timedelta
 from flask_pymongo import PyMongo
 app=Flask(__name__)
 from werkzeug.utils import secure_filename
@@ -16,7 +17,7 @@ EMAIL_ADDRESS = os.getenv('MAIL_USERNAME')
 MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
 Host = os.getenv('host')
 app.config['SECRET_KEY']=os.getenv('SECRET_KEY')
-
+app.config['PERMANENT_SESSION_LIFETIME'] =  timedelta(minutes=180)
 UPLOAD_FOLDER = 'Package/static/profiles/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024

@@ -73,7 +73,11 @@ Leaves
                         <td style="font-size: 20px;">{{ data.reason }}</td>
 
                         {% if data.remarks %}
-                        <td style="font-size: 20px;">{{ data.remarks }}</td>
+                            {% if data.remarks == "Approve" %}
+                                <td style="font-size: 20px;"><span class="badge badge-primary">{{ data.remarks }}</span></td>
+                            {% else %}
+                                <td style="font-size: 20px;"><span class="badge badge-danger">{{ data.remarks }}</span></td>
+                            {% endif %}
                         {% else %}
                         <td style="font-size: 20px;"></td>
                         {% endif %}

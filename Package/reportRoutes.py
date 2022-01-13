@@ -8,6 +8,16 @@ def Report():
 
     if "email" in session:
         data = db.Interns.find_one({"emailId": request.form['email']})
+        info={
+            "fname":"",
+            "sname":"",
+            "emailId":data['emailId']
+        }
+
+        if 'fname' in data and 'sname' in data:
+            info['fname']=data['fname']
+            info['sname']=data['sname']
+
         array = []
         cnt=0
         for data in data['inductionPlan']['modules']:
@@ -47,6 +57,10 @@ def Report():
                     temp['id']=cnt+1
                     cnt=cnt+1
                 array.append(temp)
-        return render_template('report.html', data=array)
+                result={
+                    "info":info,
+                    "array":array
+                }
+        return render_template('report.html', data=result)
     else:
         return "<p>You are not authorized entity to access this webpage</p>"

@@ -12,7 +12,7 @@ from Package import *
 #     hashpass=bcrypt.hashpw(AdminPassword.encode('utf-8'),salt)
 #     print(AdminPassword,salt,hashpass)
 
-#     Admin.insert_one({"emailId":AdminEmail,"password":hashpass})
+#     Admin.insert_one({"emailId":AdminEmail,"password":hashpass,"salt":salt})
 
 
 @app.route("/admin", methods=['POST', 'GET'])
@@ -32,7 +32,7 @@ def adminPage():
                 else:
                     salt = bcrypt.gensalt()
                     hashed = bcrypt.hashpw(password.encode('utf8'), salt)
-                    Manager.insert_one({"emailId": email, "password": hashed})
+                    Manager.insert_one({"emailId": email, "password": hashed,"salt":salt})
 
                     msg = EmailMessage()
 

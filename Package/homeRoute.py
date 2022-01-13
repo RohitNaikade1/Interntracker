@@ -204,14 +204,14 @@ def Login():
             else:
                 user=None
             
-
+            
             if user is None:
                 error = "No user exists!"
             else:
-                salt = bcrypt.gensalt()
+                salt = user['salt']
                 hashed = bcrypt.hashpw(password.encode('utf8'), salt)
-               
-                if bcrypt.checkpw(hashed, user['password']):
+                print(user['password'],hashed,bcrypt.checkpw(password.encode('utf8'), user['password']))
+                if bcrypt.checkpw(password.encode('utf8'), user['password']) == False:
                     error = "Invalid Username/Password"
                 else:
                     session['email'] = request.form['email']
@@ -250,11 +250,12 @@ def changePassword():
                 error=""
                 Mentor=db.Mentors.find_one({"emailId":request.form['email']})
                 Admin=db.Admin.find_one({"emailId":request.form['email']})
-                Manager=db.Manager.find_one({"emailId":request.form['email']})
+                Manager=db.Managers.find_one({"emailId":request.form['email']})
+                Intern=db.Interns.find_one({"emailId":request.form['email']})
                 password=request.form['password1']
 
                 if Mentor is not None:
-                    salt = bcrypt.gensalt()
+                    salt = Mentor['salt']
                     hashed = bcrypt.hashpw(password.encode('utf8'), salt)
                     try:
                         DB=db.Mentors
@@ -264,7 +265,7 @@ def changePassword():
                         error="error occurred!"
                     
                 elif Admin is not None:
-                    salt = bcrypt.gensalt()
+                    salt = Admin['salt']
                     hashed = bcrypt.hashpw(password.encode('utf8'), salt)
                     try:
                         DB=db.Admin
@@ -273,7 +274,7 @@ def changePassword():
                     except:
                         error="error occurred!"
                 elif Manager is not None:
-                    salt = bcrypt.gensalt()
+                    salt = Manager['salt']
                     hashed = bcrypt.hashpw(password.encode('utf8'), salt)
                     try:
                         DB=db.Managers
@@ -282,7 +283,8 @@ def changePassword():
                     except:
                         error="error occurred!"
                 else:
-                    salt = bcrypt.gensalt()
+                    
+                    salt = Intern['salt']
                     hashed = bcrypt.hashpw(password.encode('utf8'), salt)
                     try:
                         DB=db.Interns

@@ -69,7 +69,7 @@ def managerPage():
                     salt = bcrypt.gensalt()
                     hashed = bcrypt.hashpw(password.encode('utf8'), salt)
                     mentorDB.insert_one(
-                        {"emailId": mentor, "password": hashed, "manager": manager})
+                        {"emailId": mentor, "password": hashed,"salt":salt, "manager": manager})
                     managerDB.update_one({"emailId": manager}, {
                                          '$push': {"mentors": mentor}}, upsert=True)
 

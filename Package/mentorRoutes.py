@@ -73,7 +73,7 @@ def mentorPage():
             else:
                 salt = bcrypt.gensalt()
                 hashed = bcrypt.hashpw(password.encode('utf8'), salt)
-                internDB.insert_one({"emailId":intern,"password":hashed,"inductionPlan":plan,"mentor":mentor,"lastUpdate":str(datetime.date.today()),"leaves":[]})
+                internDB.insert_one({"emailId":intern,"password":hashed,"salt":salt,"inductionPlan":plan,"mentor":mentor,"lastUpdate":str(datetime.date.today()),"leaves":[]})
                 mentorDB.update_one({"emailId":mentor},{'$push':{"interns":intern}},upsert=True)
 
                 msg = EmailMessage()
