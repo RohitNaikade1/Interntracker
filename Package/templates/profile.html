@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Profile
+{{ session['type'] }}
 {% endblock %}
 {% block body %}
 
@@ -35,10 +35,10 @@ Profile
                                 <div class="d-flex flex-column align-items-center text-center p-3 py-5"><img
                                                 class="rounded-circle mt-5" width="150px" {% if data.url %}
                                                 src="{{ data.url }} " {% else %}
-                                                src="static/images/profile.jpg"
+                                                src="static/images/profile1.jpg"
                                                 {% endif %}>
-                                        <span class="font-weight-bold">{{ data.fname }} {{ data.sname }} </span><span
-                                                class="text-black-50">{{
+                                        <span class="font-weight-bold">{{ data.fname }} {{ data.sname }} </span>
+                                        <span style="font-size: 30px;" class="text-black-50">{{
                                                 data.emailId }}</span><span> </span>
                                 </div>
 

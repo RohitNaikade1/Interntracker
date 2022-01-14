@@ -183,6 +183,7 @@ def Login():
 
             user = None
             type=""
+            name=""
             internData=db.Interns.find_one({"emailId":email})
             mentorData=db.Mentors.find_one({"emailId":email})
             managerData=db.Managers.find_one({"emailId":email})
@@ -209,6 +210,8 @@ def Login():
                 error = "No user exists!"
             else:
                 salt = user['salt']
+                if 'fname' in user and 'sname' in user:
+                    name=user['fname'] + " " +user['sname']
                 hashed = bcrypt.hashpw(password.encode('utf8'), salt)
                 print(user['password'],hashed,bcrypt.checkpw(password.encode('utf8'), user['password']))
                 if bcrypt.checkpw(password.encode('utf8'), user['password']) == False:
@@ -216,6 +219,7 @@ def Login():
                 else:
                     session['email'] = request.form['email']
                     session['type'] = type
+                    session['name'] = name
                     return redirect(url_for("Home"))
 
         return render_template("login.html", error=error)

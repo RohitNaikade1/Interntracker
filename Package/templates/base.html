@@ -14,6 +14,11 @@
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
     <script src="https://kit.fontawesome.com/cf9c0a8ccc.js" crossorigin="anonymous"></script>
     <!-- <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}" crossorigin="anonymous"> -->
+    <style>
+        .active {
+            color: red !important;
+        }
+    </style>
     {% block styles %}
 
     {% endblock %}
@@ -28,73 +33,81 @@
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="{{ url_for('Home') }}">InternTracker</a>
+        <a class="navbar-brand" href="{{ url_for('Home') }}">
+            <img src="static/images/logo.jpg" width="85" alt="" class="d-inline-block align-middle mr-2">
+            InternTracker</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse ml-5" id="navbarNav">
             <ul class="navbar-nav">
 
                 {% if session['type'] == 'Admin' %}
-                <li class="nav-item ">
-                    <a class="nav-link" href="{{ url_for('managerPage')}}">Manager Section</a>
+                <li class="nav-item">
+                    <a class="ml-3 nav-link" href="{{ url_for('managerPage')}}">Manager Section</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('mentorPage')}}">Mentor Section</a>
+                    <a class="ml-3 nav-link" href="{{ url_for('mentorPage')}}">Mentor Section</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('profile')}}">Profile</a>
+                    <a class="ml-3 nav-link" href="{{ url_for('profile')}}">Profile</a>
                 </li>
                 {% elif session['type'] == 'Managers' %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('mentorPage')}}">Mentor Section</a>
+                <li class="nav-item ">
+                    <a class="ml-3 nav-link" href="{{ url_for('mentorPage')}}">Mentor Section</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('profile')}}">Profile</a>
+                    <a class="ml-3 nav-link" href="{{ url_for('profile')}}">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('plans')}}">Plans</a>
+                    <a class="ml-3 nav-link" href="{{ url_for('plans')}}">Plans</a>
                 </li>
                 {% elif session['type'] == 'Mentors' %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('leaves')}}">Leaves</a>
+                    <a class="ml-3 nav-link" href="{{ url_for('leaves')}}">Leaves</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('profile')}}">Profile</a>
+                    <a class="ml-3 nav-link" href="{{ url_for('profile')}}">Profile</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('plans')}}">Plans</a>
+                    <a class="ml-3 nav-link" href="{{ url_for('plans')}}">Plans</a>
                 </li>
-                
+
                 {% elif session['type'] == 'Interns' %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('exportPlan')}}">Plan</a>
+                    <a class="ml-3 nav-link" href="{{ url_for('exportPlan')}}">Plan</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('profile')}}">Profile</a>
+                    <a class="ml-3 nav-link" href="{{ url_for('profile')}}">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('leaves')}}">Leaves</a>
+                    <a class="ml-3 nav-link" href="{{ url_for('leaves')}}">Leaves</a>
                 </li>
                 {% else %}
 
                 {% endif %}
             </ul>
 
-
         </div>
-
         {% if session['email'] %}
-        <a href="{{url_for('Logout')}}"><button class="float-right btn btn-outline-primary"
-                type="submit">Logout</button></a>
+
+        {% if session['name'] != "" %}
+        <button class="btn mr-3" data-toggle="popover" title="{{ session['name'] }}"
+            data-content="{{ session['email'] }}"><i class="fas fa-user"
+                style="font-size: 30px;color: #fff;"></i></button>
         {% else %}
-        <a href="{{url_for('Login')}}"><button class="float-right btn btn-outline-primary"
-                type="submit">Login</button></a>
+        <button class="btn mr-3" data-toggle="popover" title="{{ session['type'] }}"
+        data-content="EmailId: {{ session['email'] }}"><i class="fas fa-user"
+            style="font-size: 30px;color: #fff;"></i></button>
         {% endif %}
+        <a href="{{url_for('Logout')}}"><button class="btn btn-outline-primary" type="submit">Logout</button></a>
 
 
+        {% else %}
+        <a href="{{url_for('Login')}}"><button class="btn btn-outline-primary" type="submit">Login</button></a>
+        {% endif %}
     </nav>
 
     <h1>
@@ -119,5 +132,10 @@
 
     {% endblock %}
 </body>
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+</script>
 
 </html>
