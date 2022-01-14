@@ -5,9 +5,9 @@
 {% endblock %}
 {% block body %}
 
-{% if 'error' in interns %}
+{% if 'error' in data %}
 <div class=" mt-3 alert alert-success alert-dismissible fade show" role="alert">
-    <p style="font-size: 20px;">{{ interns.error }}</p>
+    <p style="font-size: 20px;">{{ data.error }}</p>
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
@@ -20,7 +20,8 @@
             <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
                 <div class="card border-0 shadow rounded-3 my-5">
                     <div class="card-body p-4 p-sm-5">
-                        <h5 class="card-title text-center text-dark mb-5 fs-5" style="font-family: 'Times New Roman', Times, serif;">Mentor DashBoard</h5>
+                        <h5 class="card-title text-center text-dark mb-5 fs-5"
+                            style="font-family: 'Times New Roman', Times, serif;">Mentor DashBoard</h5>
                         <form action="{{ url_for('mentorPage') }}" method=post>
                             <div class="form-floating mb-3">
                                 <input type="email" class="form-control" id="floatingInput" name="intern"
@@ -32,11 +33,17 @@
                                     placeholder="Mentor's Email Address" required>
                                 <!-- <label for="floatingInput">Email address</label> -->
                             </div>
+
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingInput" name="plan"
-                                    placeholder="Enter Plan Name" required>
-                                <!-- <label for="floatingInput">Email address</label> -->
+                                <select id="inputState" name="plan" class="form-control" required>
+
+                                    {% for name in data.plans %}
+                                    <option value="{{ name }}"> {{ name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
+
+
                             <div class="form-floating mb-3">
                                 <input type="password" class="form-control" id="floatingPassword" name="password"
                                     placeholder="Password" required>
@@ -70,7 +77,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for intern in interns.interns %}
+                    {% for intern in data.interns %}
                     <tr>
                         <td style="font-size: 20px;">{{ intern.fname }} {{ intern.sname }}</td>
                         <td style="font-size: 20px;">{{ intern.emailId }}</td>
@@ -87,11 +94,13 @@
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Want to view a sheet of {{ intern.emailId }} ?</h5>
+                                                <h5 class="modal-title">Want to view a sheet of {{ intern.emailId }} ?
+                                                </h5>
                                             </div>
                                             <div class="modal-footer">
                                                 <form class="ml-2" action="{{ url_for('exportPlan')}}" method=post>
-                                                    <input class="d-none" name="email" type="text" value="{{ intern.emailId }}" />
+                                                    <input class="d-none" name="email" type="text"
+                                                        value="{{ intern.emailId }}" />
                                                     <button type="submit" class="btn btn-primary">Yes</button>
                                                 </form>
                                                 <button type="button" class="btn btn-secondary"
@@ -100,7 +109,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 {% if 'planLink' in intern %}
                                 <button type="submit" class="btn btn-warning ml-2" data-toggle="modal"
                                     data-target="#download{{intern._id}}">Download sheet</button>
@@ -109,7 +118,8 @@
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Want to download a sheet of {{ intern.emailId }} ?</h5>
+                                                <h5 class="modal-title">Want to download a sheet of {{ intern.emailId }}
+                                                    ?</h5>
                                             </div>
                                             <div class="modal-footer">
                                                 <form class="ml-2" action="{{ intern.planLink }}">
@@ -131,7 +141,8 @@
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Want to submit a feedback for {{ intern.emailId }} ? </h5>
+                                                <h5 class="modal-title">Want to submit a feedback for {{ intern.emailId
+                                                    }} ? </h5>
                                             </div>
                                             <div class="modal-footer">
                                                 <form class="ml-2" action="{{ url_for('renderFeedback')}}" method=post>
@@ -150,11 +161,13 @@
                                 <button type="submit" class="btn btn-secondary ml-2" data-toggle="modal"
                                     data-target="#report{{intern._id}}">Report</button>
 
-                                <div class="modal fade" id="report{{intern._id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="report{{intern._id}}" tabindex="-1" role="dialog"
+                                    aria-labelledby="myModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Want to open a report of {{ intern.emailId }} ? </h5>
+                                                <h5 class="modal-title">Want to open a report of {{ intern.emailId }} ?
+                                                </h5>
                                             </div>
                                             <div class="modal-footer">
                                                 <form action="{{ url_for('Report')}}" method=post>
@@ -172,11 +185,13 @@
                                 <button type="submit" class="btn btn-danger ml-2" data-toggle="modal"
                                     data-target="#delete{{intern._id}}">Delete</button>
 
-                                <div class="modal fade" id="delete{{intern._id}}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal fade" id="delete{{intern._id}}" tabindex="-1" role="dialog"
+                                    aria-labelledby="myModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">Want to delete a record of {{ intern.emailId }} ? </h5>
+                                                <h5 class="modal-title">Want to delete a record of {{ intern.emailId }}
+                                                    ? </h5>
                                             </div>
                                             <div class="modal-footer">
                                                 <form action="{{ url_for('deleteIntern')}}" method=post>

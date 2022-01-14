@@ -1,19 +1,30 @@
 from sys import modules
 from Package import *
 
-@app.route("/renderFeedback",methods=['GET','POST'])
+
+@app.route("/renderFeedback", methods=['GET', 'POST'])
 def renderFeedback():
-    
+
     if "email" in session and session['type'] == "Mentors":
-        data=request.form['email']
-        return render_template("feedback.html",data=data)
+        data = {
+            "email": "",
+            "topics": []
+        }
+        data['email'] = request.form['email']
+        Intern = db.Interns.find_one({"emailId": data['email']})
+        for topic in Intern['inductionPlan']['modules']:
+            print(topic)
+            if topic['RKT'] == False:
+                data['topics'].append(topic['moduleName'])
+        return render_template("feedback.html", data=data)
     else:
         return "<p>You are not authorized entity to access this webpage</p>"
+
 
 @app.route("/feedback", methods=['GET', 'POST'])
 def Feedback():
     if "email" in session and session['type'] == "Mentors":
-        error=""
+        error = ""
         if request.method == 'POST':
 
             Interns = db.Interns
@@ -22,8 +33,19 @@ def Feedback():
             if request.form['rating'] == 'Below Expectations':
 
                 if request.form['deadline'] == "":
-                    error="please select deadline!"
-                    return render_template("feedback.html",error=error)
+                    error = "please select deadline!"
+                    data = {
+                        "error":error,
+                        "email": "",
+                        "topics": []
+                    }
+                    data['email'] = request.form['email']
+                    Intern = db.Interns.find_one({"emailId": data['email']})
+                    for topic in Intern['inductionPlan']['modules']:
+                        print(topic)
+                        if topic['RKT'] == False:
+                            data['topics'].append(topic['moduleName'])
+                        return render_template("feedback.html", data=data)
 
                 for module in data['inductionPlan']['modules']:
                     if module['moduleName'] == request.form['topic']:
@@ -154,10 +176,21 @@ def Feedback():
                     smtp.login(EMAIL_ADDRESS, MAIL_PASSWORD)
 
                     smtp.send_message(msg)
-                    error="Feedback submitted successfully!"
-                    return render_template("feedback.html",error=error)
+                error="Feedback submitted successfully!"
+                data = {
+                        "error":error,
+                        "email": "",
+                        "topics": []
+                }
+                data['email'] = request.form['email']
+                Intern = db.Interns.find_one({"emailId": data['email']})
+                for topic in Intern['inductionPlan']['modules']:
+                    if topic['RKT'] == False:
+                        data['topics'].append(topic['moduleName'])
+                return render_template("feedback.html", data=data)
         else:
             return render_template("feedback.html")
+            
 
     else:
         return "<p>You are not authorized entity to access this webpage</p>"

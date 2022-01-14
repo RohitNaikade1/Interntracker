@@ -16,23 +16,37 @@ def deleteIntern():
                 intern=Intern.find({})
                 data={
                         "error":"Intern deleted successfully",
-                        "interns":intern
+                        "interns":intern,
+                        "plans":[]
                     }
-                return render_template('mentor.html',interns=data)
+                plans=db.Plans.find({})
+                for res in plans:
+                    data['plans'].append(res['name'])
+                return render_template('mentor.html',data=data)
                 
             except:
                 Intern=db.Interns
                 intern=Intern.find({})
                 data={
                         "error":"Error occurred!",
-                        "interns":intern
+                        "interns":intern,
+                        "plans":[]
                     }
-                return render_template('mentor.html',interns=data)
+                plans=db.Plans.find({})
+                for res in plans:
+                    data['plans'].append(res['name'])
+                return render_template('mentor.html',data=data)
 
         else:
             Intern=db.Interns
             intern=Intern.find({})
-
-            return render_template('admin.html',interns=intern)
+            data={
+                    "interns":intern,
+                    "plans":[]
+                }
+            plans=db.Plans.find({})
+            for res in plans:
+                data['plans'].append(res['name'])
+            return render_template('mentor.html',data=data)
     else:
         return "<p>You are not authorized entity to access this webpage</p>"

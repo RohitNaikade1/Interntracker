@@ -15,9 +15,12 @@
     <script src="https://kit.fontawesome.com/cf9c0a8ccc.js" crossorigin="anonymous"></script>
     <!-- <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}" crossorigin="anonymous"> -->
     <style>
-        .active {
-            color: red !important;
+       .logo {
+            -webkit-filter: grayscale(100%);
+            /* Safari 6.0 - 9.0 */
+            filter: grayscale(100%);
         }
+    
     </style>
     {% block styles %}
 
@@ -34,7 +37,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="{{ url_for('Home') }}">
-            <img src="static/images/logo.jpg" width="85" alt="" class="d-inline-block align-middle mr-2">
+            <img src="static/images/logo.jpg" width="85" alt="" class="d-inline-block align-middle mr-2 logo">
             InternTracker</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +68,7 @@
                 </li>
                 {% elif session['type'] == 'Mentors' %}
                 <li class="nav-item">
-                    <a class="ml-3 nav-link" href="{{ url_for('leaves')}}">Leaves</a>
+                    <a class="ml-3 nav-link" id="a6" href="{{ url_for('leaves')}}">Leaves</a>
                 </li>
                 <li class="nav-item">
                     <a class="ml-3 nav-link" href="{{ url_for('profile')}}">Profile</a>
@@ -99,8 +102,8 @@
                 style="font-size: 30px;color: #fff;"></i></button>
         {% else %}
         <button class="btn mr-3" data-toggle="popover" title="{{ session['type'] }}"
-        data-content="EmailId: {{ session['email'] }}"><i class="fas fa-user"
-            style="font-size: 30px;color: #fff;"></i></button>
+            data-content="EmailId: {{ session['email'] }}"><i class="fas fa-user"
+                style="font-size: 30px;color: #fff;"></i></button>
         {% endif %}
         <a href="{{url_for('Logout')}}"><button class="btn btn-outline-primary" type="submit">Logout</button></a>
 

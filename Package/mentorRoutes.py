@@ -55,12 +55,23 @@ def mentorPage():
             mentor=request.form['mentor']
             plan=request.form['plan']
             password=request.form['password']
-
-            Plan=db.Plans
-            plan=Plan.find_one({'name':plan})
+            print("@"+plan+"@")
+            plan=db.Plans.find_one({'name':request.form['plan']})
+            print(plan)
             if plan is None:
+                Interns=db.Interns
                 error="Plan does not exist"
-                return render_template('mentor.html',error=error)
+                intern=Interns.find({})
+                data={
+                    "error":error,
+                    "interns":intern,
+                    "plans":[]
+                }
+                plans=db.Plans.find({})
+                for res in plans:
+                    data['plans'].append(res['name'])
+                return render_template('mentor.html',data=data)
+
 
             internDB=db.Interns
             mentorDB=db.Mentors
@@ -103,25 +114,35 @@ def mentorPage():
                 intern=Interns.find({})
                 data={
                     "error":error,
-                    "interns":intern
+                    "interns":intern,
+                    "plans":[]
                 }
-               
-                return render_template('mentor.html',interns=data)
+                plans=db.Plans.find({})
+                for res in plans:
+                    data['plans'].append(res['name'])
+                return render_template('mentor.html',data=data)
             Interns=db.Interns
             intern=Interns.find({})
             data={
                     "error":error,
-                    "interns":intern
+                    "interns":intern,
+                    "plans":[]
                 }
-            return render_template('mentor.html',interns=data)
+            plans=db.Plans.find({})
+            for res in plans:
+                data['plans'].append(res['name'])
+            return render_template('mentor.html',data=data)
         else:
 
             Interns=db.Interns
             intern=Interns.find({})
             data={
-                    "interns":intern
+                    "interns":intern,
+                    "plans":[]
                 }
-            
-            return render_template('mentor.html',interns=data)
+            plans=db.Plans.find({})
+            for res in plans:
+                data['plans'].append(res['name'])
+            return render_template('mentor.html',data=data)
     else:
         return "<p>You are not authorized entity to access this webpage</p>"
